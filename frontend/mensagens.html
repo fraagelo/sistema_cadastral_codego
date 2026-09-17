@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mensagens e Anexos — Sistema Cadastral CODEGO</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="page">
+
+    <header class="letterhead">
+      <img class="letterhead__mark" src="assets/brasao_codego.png" alt="Brasão da Companhia de Desenvolvimento Econômico de Goiás">
+      <div class="letterhead__text">
+        <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
+        <h1 class="letterhead__title">Sistema Cadastral</h1>
+      </div>
+    </header>
+
+    <ol class="stepper" aria-label="Etapas do processo">
+      <li class="stepper__item stepper__item--done">
+        <span class="stepper__index">1</span>
+        <span class="stepper__label">Cadastro</span>
+      </li>
+      <li class="stepper__item stepper__item--done">
+        <span class="stepper__index">2</span>
+        <span class="stepper__label">Assinatura</span>
+      </li>
+      <li class="stepper__item stepper__item--done">
+        <span class="stepper__index">3</span>
+        <span class="stepper__label">Recibo</span>
+      </li>
+      <li class="stepper__item stepper__item--current">
+        <span class="stepper__index">4</span>
+        <span class="stepper__label">Mensagens</span>
+      </li>
+    </ol>
+
+    <main class="card">
+      <div class="card__intro">
+        <h2 class="card__title">Mensagens e anexos complementares</h2>
+        <p class="card__desc">
+          Envie uma mensagem vinculada ao seu processo, com comprovantes, fotos
+          ou outros documentos complementares em anexo (PDF, PNG ou JPG).
+        </p>
+      </div>
+
+      <form id="form-mensagem" novalidate>
+
+        <div class="field">
+          <label for="protocolo">Número do protocolo (opcional)</label>
+          <input type="text" id="protocolo" name="protocolo" placeholder="REC-2026-00000">
+          <p class="field__error" data-error-for="protocolo"></p>
+        </div>
+
+        <div id="processo-info" class="processo-info" hidden>
+          <div>
+            <span class="processo-info__label">Empresa: </span>
+            <span class="processo-info__valor" id="processo-info-nome"></span>
+          </div>
+          <span class="processo-info__status" id="processo-info-status"></span>
+        </div>
+
+        <div class="field">
+          <label for="remetente_nome">Nome do remetente</label>
+          <input type="text" id="remetente_nome" name="remetente_nome" autocomplete="name" required>
+          <p class="field__error" data-error-for="remetente_nome"></p>
+        </div>
+
+        <div class="field">
+          <label for="assunto">Assunto</label>
+          <input type="text" id="assunto" name="assunto" required>
+          <p class="field__error" data-error-for="assunto"></p>
+        </div>
+
+        <div class="field">
+          <label for="conteudo">Mensagem</label>
+          <textarea id="conteudo" name="conteudo" rows="5" placeholder="Descreva o motivo do contato ou dos anexos enviados" required></textarea>
+          <p class="field__error" data-error-for="conteudo"></p>
+        </div>
+
+        <div class="field">
+          <label for="anexos">Anexos (opcional)</label>
+          <div class="file-drop">
+            <input type="file" id="anexos" name="anexos" accept="application/pdf,image/png,image/jpeg" multiple>
+            <p class="file-drop__hint">PDF, PNG ou JPG, até 10MB cada.</p>
+            <p class="file-drop__selected" id="anexos-selecionado" hidden></p>
+          </div>
+        </div>
+
+        <div class="card__footer">
+          <p class="card__footer-note">
+            A mensagem fica registrada e vinculada ao protocolo informado, se houver.
+          </p>
+          <button type="submit" class="btn-primary" id="btn-submit">Enviar mensagem</button>
+        </div>
+
+      </form>
+
+      <div class="feedback" id="feedback" role="status" aria-live="polite" hidden></div>
+
+      <div id="historico-wrapper" hidden>
+        <h3 class="section-title">Mensagens deste processo</h3>
+        <div id="historico-lista"></div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <script src="js/mensagens.js"></script>
+</body>
+</html>

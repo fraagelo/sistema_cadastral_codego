@@ -188,7 +188,9 @@ form.addEventListener('submit', async (event) => {
       `<p class="feedback__title">Documento assinado recebido com sucesso</p>
        <p>O processo de protocolo <strong>${protocolo}</strong> está agora com status <strong>${data.status}</strong>.</p>
        ${avisoEmail}
-       <p>O recibo eletrônico deste processo estará disponível na próxima etapa.</p>`,
+       <div class="feedback__actions">
+         <a class="feedback__link" href="recibo.html?protocolo=${encodeURIComponent(protocolo)}">Ver recibo eletrônico →</a>
+       </div>`,
       'success'
     );
 

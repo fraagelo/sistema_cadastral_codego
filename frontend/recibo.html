@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recibo Eletrônico — Sistema Cadastral CODEGO</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="page">
+
+    <header class="letterhead">
+      <img class="letterhead__mark" src="assets/brasao_codego.png" alt="Brasão da Companhia de Desenvolvimento Econômico de Goiás">
+      <div class="letterhead__text">
+        <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
+        <h1 class="letterhead__title">Sistema Cadastral</h1>
+      </div>
+    </header>
+
+    <ol class="stepper" aria-label="Etapas do processo">
+      <li class="stepper__item stepper__item--done">
+        <span class="stepper__index">1</span>
+        <span class="stepper__label">Cadastro</span>
+      </li>
+      <li class="stepper__item stepper__item--done">
+        <span class="stepper__index">2</span>
+        <span class="stepper__label">Assinatura</span>
+      </li>
+      <li class="stepper__item stepper__item--current">
+        <span class="stepper__index">3</span>
+        <span class="stepper__label">Recibo</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">4</span>
+        <span class="stepper__label">Mensagens</span>
+      </li>
+    </ol>
+
+    <main class="card">
+      <div class="card__intro">
+        <h2 class="card__title">Recibo eletrônico</h2>
+        <p class="card__desc">
+          Informe o protocolo do processo para consultar o recibo eletrônico,
+          disponível assim que o documento assinado é recebido e validado.
+        </p>
+      </div>
+
+      <form id="form-recibo" novalidate>
+        <div class="field">
+          <label for="protocolo">Número do protocolo</label>
+          <input type="text" id="protocolo" name="protocolo" placeholder="REC-2026-00000" required>
+          <p class="field__error" data-error-for="protocolo"></p>
+        </div>
+
+        <div class="card__footer">
+          <p class="card__footer-note">
+            O recibo só fica disponível depois que o documento assinado é recebido (Etapa 2).
+          </p>
+          <button type="submit" class="btn-primary" id="btn-submit">Consultar recibo</button>
+        </div>
+      </form>
+
+      <div id="recibo-resultado" hidden>
+        <div class="recibo">
+          <div class="recibo__cabecalho">
+            <p class="recibo__selo">✔ Recibo Eletrônico de Entrega de Documento</p>
+            <p class="recibo__protocolo" id="recibo-protocolo"></p>
+          </div>
+          <div class="recibo__corpo">
+            <div class="recibo__linha">
+              <span class="recibo__linha-label">Data / hora do envio</span>
+              <span class="recibo__linha-valor" id="recibo-data"></span>
+            </div>
+            <div class="recibo__linha">
+              <span class="recibo__linha-label">Remetente</span>
+              <span class="recibo__linha-valor" id="recibo-remetente"></span>
+            </div>
+            <div class="recibo__linha">
+              <span class="recibo__linha-label">Documento</span>
+              <span class="recibo__linha-valor" id="recibo-documento"></span>
+            </div>
+            <p class="recibo__declaracao" id="recibo-declaracao"></p>
+            <ul class="recibo__arquivos" id="recibo-arquivos"></ul>
+          </div>
+        </div>
+
+        <div class="card__footer" style="border-top: none; margin-top: 20px;">
+          <p class="card__footer-note">Guarde este recibo para os devidos fins.</p>
+          <div class="feedback__actions">
+            <button type="button" class="btn-primary" id="btn-imprimir">Imprimir recibo</button>
+            <a class="feedback__link feedback__link--secondary" id="link-mensagens" href="#">Enviar mensagem/anexo →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="feedback" id="feedback" role="status" aria-live="polite" hidden></div>
+
+    </main>
+
+  </div>
+
+  <script src="js/recibo.js"></script>
+</body>
+</html>

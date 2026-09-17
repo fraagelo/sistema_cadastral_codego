@@ -482,6 +482,150 @@ input:focus-visible {
   color: var(--primary-dark);
 }
 
+/* Recibo eletrônico */
+
+.recibo {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.recibo__cabecalho {
+  padding: 18px 22px;
+  background: var(--primary);
+  color: var(--surface);
+}
+
+.recibo__selo {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin: 0 0 2px;
+}
+
+.recibo__protocolo {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.recibo__corpo {
+  padding: 20px 22px;
+}
+
+.recibo__linha {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.recibo__linha:last-of-type {
+  border-bottom: none;
+}
+
+.recibo__linha-label {
+  color: var(--ink-soft);
+  flex-shrink: 0;
+}
+
+.recibo__linha-valor {
+  color: var(--ink);
+  font-weight: 600;
+  text-align: right;
+}
+
+.recibo__declaracao {
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  background: var(--paper);
+  border-left: 3px solid var(--gold);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink);
+  font-style: italic;
+}
+
+.recibo__arquivos {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.recibo__arquivos li {
+  padding: 4px 0;
+}
+
+@media print {
+  .letterhead, .stepper, .card__intro, form, .card__footer, .feedback__actions {
+    display: none !important;
+  }
+  body {
+    background: var(--surface);
+  }
+  .card {
+    border: none;
+    padding: 0;
+  }
+}
+
+/* Mensagens e anexos */
+
+.mensagem-item {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+}
+
+.mensagem-item__cabecalho {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.mensagem-item__assunto {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.mensagem-item__data {
+  color: var(--ink-soft);
+  flex-shrink: 0;
+}
+
+.mensagem-item__remetente {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+}
+
+.mensagem-item__conteudo {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.mensagem-item__anexos {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--primary-dark);
+}
+
+.mensagem-item__anexos span {
+  display: inline-block;
+  margin-right: 10px;
+}
+
 /* Feedback (sucesso / erro do envio) */
 
 .feedback {
