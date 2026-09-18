@@ -34,6 +34,33 @@ def enviar_email_documento_assinado(
     return _enviar_via_smtp(destinatario_email, nome_empresarial, protocolo, caminho_pdf_assinado)
 
 
+def enviar_email_nova_mensagem(
+    destinatario_email: str,
+    remetente_nome: str,
+    assunto: str,
+    conteudo: str,
+    protocolo: str | None,
+    caminhos_anexos: list[str],
+) -> tuple[bool, str | None]:
+    """
+    Envia um e-mail de notificação para uma nova mensagem recebida no Módulo
+    de Mensagens e Anexos (Etapa 4), com os anexos (se houver) em anexo.
+    Escolhe a implementação conforme settings.email_provider ("smtp" ou
+    "outlook_graph"). Retorna (True, None) se o envio foi bem-sucedido, ou
+    (False, mensagem_de_erro) caso contrário — nunca levanta exceção.
+    """
+    if settings.email_provider == "outlook_graph":
+        from app.services.outlook_email_service import enviar_email_nova_mensagem_outlook
+
+        return enviar_email_nova_mensagem_outlook(
+            destinatario_email, remetente_nome, assunto, conteudo, protocolo, caminhos_anexos
+        )
+
+    return _enviar_mensagem_via_smtp(
+        destinatario_email, remetente_nome, assunto, conteudo, protocolo, caminhos_anexos
+    )
+
+
 def _montar_corpo_texto(nome_empresarial: str, protocolo: str) -> str:
     return (
         f"Olá,\n\n"
@@ -65,6 +92,40 @@ def _montar_corpo_html(nome_empresarial: str, protocolo: str) -> str:
         deste processo estará disponível.
       </p>
       <p>Atenciosamente,<br>Companhia de Desenvolvimento Econômico de Goiás</p>
+    </div>
+    """
+
+
+def _montar_corpo_mensagem_texto(remetente_nome: str, assunto: str, conteudo: str, protocolo: str | None) -> str:
+    linha_protocolo = f"Protocolo vinculado: {protocolo}\n\n" if protocolo else "Sem protocolo vinculado.\n\n"
+    return (
+        f"Olá,\n\n"
+        f"Uma nova mensagem foi recebida no Sistema Cadastral CODEGO.\n\n"
+        f"Remetente: {remetente_nome}\n"
+        f"Assunto: {assunto}\n\n"
+        f"{linha_protocolo}"
+        f"Mensagem:\n{conteudo}\n\n"
+        f"Atenciosamente,\n"
+        f"Sistema Cadastral CODEGO"
+    )
+
+
+def _montar_corpo_mensagem_html(remetente_nome: str, assunto: str, conteudo: str, protocolo: str | None) -> str:
+    linha_protocolo = (
+        f'<p style="font-family: monospace; background: #f2f2f2; padding: 8px 12px; '
+        f'display: inline-block;">Protocolo: <strong>{protocolo}</strong></p>'
+        if protocolo
+        else "<p><em>Sem protocolo vinculado.</em></p>"
+    )
+    return f"""
+    <div style="font-family: Arial, sans-serif; color: #1a1a1a; font-size: 14px; line-height: 1.6;">
+      <p>Olá,</p>
+      <p>Uma nova mensagem foi recebida no <strong>Sistema Cadastral CODEGO</strong>.</p>
+      <p><strong>Remetente:</strong> {remetente_nome}</p>
+      <p><strong>Assunto:</strong> {assunto}</p>
+      {linha_protocolo}
+      <p><strong>Mensagem:</strong><br>{conteudo}</p>
+      <p>Atenciosamente,<br>Sistema Cadastral CODEGO</p>
     </div>
     """
 
@@ -123,4 +184,69 @@ def _enviar_via_smtp(
         return True, None
     except Exception as erro:  # noqa: BLE001 — falha de e-mail não pode derrubar o upload
         logger.exception("Falha ao enviar e-mail de confirmação")
+        return False, f"{type(erro).__name__}: {erro}"
+
+
+def _enviar_mensagem_via_smtp(
+    destinatario_email: str,
+    remetente_nome: str,
+    assunto: str,
+    conteudo: str,
+    protocolo: str | None,
+    caminhos_anexos: list[str],
+) -> tuple[bool, str | None]:
+    """
+    Envia o e-mail de notificação de nova mensagem, com os anexos (se houver)
+    anexados separadamente. Retorna (True, None) se o envio foi bem-sucedido,
+    ou (False, mensagem_de_erro) caso contrário — nunca levanta exceção.
+    """
+    if not settings.smtp_enabled:
+        motivo = "Envio de e-mail desabilitado (SMTP_ENABLED=false)."
+        logger.info(motivo)
+        return False, motivo
+
+    if not settings.smtp_user or not settings.smtp_password:
+        motivo = "SMTP_USER/SMTP_PASSWORD não configurados."
+        logger.warning(motivo)
+        return False, motivo
+
+    remetente = settings.smtp_from_email or settings.smtp_user
+
+    mensagem = MIMEMultipart("mixed")
+    protocolo_assunto = f" — Protocolo {protocolo}" if protocolo else ""
+    mensagem["Subject"] = f"Nova mensagem recebida{protocolo_assunto}: {assunto}"
+    mensagem["From"] = formataddr((settings.smtp_from_name, remetente))
+    mensagem["To"] = destinatario_email
+
+    corpo_alternativo = MIMEMultipart("alternative")
+    corpo_alternativo.attach(
+        MIMEText(_montar_corpo_mensagem_texto(remetente_nome, assunto, conteudo, protocolo), "plain", "utf-8")
+    )
+    corpo_alternativo.attach(
+        MIMEText(_montar_corpo_mensagem_html(remetente_nome, assunto, conteudo, protocolo), "html", "utf-8")
+    )
+    mensagem.attach(corpo_alternativo)
+
+    for caminho in caminhos_anexos:
+        try:
+            with open(caminho, "rb") as f:
+                subtipo = caminho.rsplit(".", 1)[-1].lower() if "." in caminho else "octet-stream"
+                anexo = MIMEApplication(f.read(), _subtype=subtipo)
+                anexo.add_header(
+                    "Content-Disposition", "attachment", filename=caminho.rsplit("/", 1)[-1]
+                )
+                mensagem.attach(anexo)
+        except OSError as erro:
+            logger.warning("Não foi possível anexar o arquivo %s ao e-mail: %s", caminho, erro)
+
+    try:
+        with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=15) as servidor:
+            if settings.smtp_use_tls:
+                servidor.starttls()
+            servidor.login(settings.smtp_user, settings.smtp_password)
+            servidor.sendmail(remetente, [destinatario_email], mensagem.as_string())
+        logger.info("E-mail de nova mensagem enviado para %s.", destinatario_email)
+        return True, None
+    except Exception as erro:  # noqa: BLE001 — falha de e-mail não pode derrubar o envio da mensagem
+        logger.exception("Falha ao enviar e-mail de nova mensagem")
         return False, f"{type(erro).__name__}: {erro}"

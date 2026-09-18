@@ -204,6 +204,13 @@ function validateForm() {
     valid = false;
   }
 
+  if (typeof grecaptcha !== 'undefined' && !grecaptcha.getResponse()) {
+    setError('recaptcha', 'Confirme que você não é um robô.');
+    valid = false;
+  } else {
+    clearError('recaptcha');
+  }
+
   return valid;
 }
 
@@ -229,9 +236,17 @@ form.addEventListener('submit', async (event) => {
   if (processoResolvido) {
     formData.append('processo_id', processoResolvido.id);
   }
+  const protocoloValor = protocoloInput.value.trim();
+  if (protocoloValor) {
+    formData.append('protocolo', protocoloValor);
+  }
   Array.from(anexosInput.files).forEach((file) => {
     formData.append('anexos', file);
   });
+  formData.append(
+    'g_recaptcha_response',
+    typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : ''
+  );
 
   setLoading(true);
 
@@ -273,6 +288,9 @@ form.addEventListener('submit', async (event) => {
     );
   } finally {
     setLoading(false);
+    if (typeof grecaptcha !== 'undefined') {
+      grecaptcha.reset();
+    }
   }
 });
 

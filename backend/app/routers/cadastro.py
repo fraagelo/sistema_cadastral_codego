@@ -9,6 +9,7 @@ from app.schemas.cadastro import CadastroResponse
 from app.schemas.anexo_viii_d import AnexoViiiDCreate
 from app.services.protocolo import gerar_protocolo
 from app.services.pdf_generator import gerar_pdf_anexo_viii_d
+from app.services.recaptcha import verificar_recaptcha
 
 router = APIRouter()
 
@@ -20,6 +21,10 @@ def criar_cadastro_anexo_viii_d(payload: AnexoViiiDCreate, db: Session = Depends
     tipo Anexo VIII-D com protocolo único, e gera o PDF preenchido no modelo
     oficial do documento (Etapa 1 do fluxo).
     """
+    recaptcha_ok, recaptcha_erro = verificar_recaptcha(payload.g_recaptcha_response)
+    if not recaptcha_ok:
+        raise HTTPException(status_code=422, detail=recaptcha_erro)
+
     usuario = db.query(Usuario).filter(Usuario.cpf_cnpj == payload.cnpj).first()
     if usuario is None:
         usuario = Usuario(

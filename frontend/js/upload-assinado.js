@@ -151,6 +151,12 @@ form.addEventListener('submit', async (event) => {
     return;
   }
 
+  if (typeof grecaptcha !== 'undefined' && !grecaptcha.getResponse()) {
+    setError('recaptcha', 'Confirme que você não é um robô.');
+    return;
+  }
+  clearError('recaptcha');
+
   setLoading(true);
 
   try {
@@ -164,6 +170,10 @@ form.addEventListener('submit', async (event) => {
 
     const formData = new FormData();
     formData.append('arquivo', file);
+    formData.append(
+      'g_recaptcha_response',
+      typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : ''
+    );
 
     const response = await fetch(`${API_BASE_URL}/api/cadastro/${processoResolvido.id}/assinado`, {
       method: 'POST',
@@ -204,6 +214,9 @@ form.addEventListener('submit', async (event) => {
     );
   } finally {
     setLoading(false);
+    if (typeof grecaptcha !== 'undefined') {
+      grecaptcha.reset();
+    }
   }
 });
 

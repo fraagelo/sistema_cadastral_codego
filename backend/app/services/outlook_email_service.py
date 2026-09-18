@@ -99,3 +99,95 @@ def enviar_email_documento_assinado_outlook(
     except requests.RequestException as erro:
         logger.exception("Falha de rede ao enviar e-mail via Graph")
         return False, f"{type(erro).__name__}: {erro}"
+
+
+def _montar_corpo_mensagem_html(remetente_nome: str, assunto: str, conteudo: str, protocolo: str | None) -> str:
+    linha_protocolo = (
+        f'<p style="font-family: monospace; background: #f2f2f2; padding: 8px 12px; '
+        f'display: inline-block;">Protocolo: <strong>{protocolo}</strong></p>'
+        if protocolo
+        else "<p><em>Sem protocolo vinculado.</em></p>"
+    )
+    return f"""
+    <div style="font-family: Arial, sans-serif; color: #1a1a1a; font-size: 14px; line-height: 1.6;">
+      <p>Olá,</p>
+      <p>Uma nova mensagem foi recebida no <strong>Sistema Cadastral CODEGO</strong>.</p>
+      <p><strong>Remetente:</strong> {remetente_nome}</p>
+      <p><strong>Assunto:</strong> {assunto}</p>
+      {linha_protocolo}
+      <p><strong>Mensagem:</strong><br>{conteudo}</p>
+      <p>Atenciosamente,<br>Sistema Cadastral CODEGO</p>
+    </div>
+    """
+
+
+def enviar_email_nova_mensagem_outlook(
+    destinatario_email: str,
+    remetente_nome: str,
+    assunto: str,
+    conteudo: str,
+    protocolo: str | None,
+    caminhos_anexos: list[str],
+) -> tuple[bool, str | None]:
+    """
+    Envia o e-mail de notificação de nova mensagem via Microsoft Graph API
+    (OAuth2). Retorna (True, None) em sucesso, ou (False, motivo) em caso de
+    falha — nunca levanta exceção.
+    """
+    access_token, erro_token = obter_access_token()
+    if access_token is None:
+        logger.warning("Não foi possível obter token do Outlook: %s", erro_token)
+        return False, erro_token
+
+    anexos_graph = []
+    for caminho in caminhos_anexos:
+        try:
+            with open(caminho, "rb") as f:
+                anexo_base64 = base64.b64encode(f.read()).decode("ascii")
+            anexos_graph.append(
+                {
+                    "@odata.type": "#microsoft.graph.fileAttachment",
+                    "name": caminho.rsplit("/", 1)[-1],
+                    "contentType": "application/octet-stream",
+                    "contentBytes": anexo_base64,
+                }
+            )
+        except OSError as erro:
+            logger.warning("Não foi possível ler o anexo %s: %s", caminho, erro)
+
+    protocolo_assunto = f" — Protocolo {protocolo}" if protocolo else ""
+    corpo = {
+        "message": {
+            "subject": f"Nova mensagem recebida{protocolo_assunto}: {assunto}",
+            "body": {
+                "contentType": "HTML",
+                "content": _montar_corpo_mensagem_html(remetente_nome, assunto, conteudo, protocolo),
+            },
+            "toRecipients": [{"emailAddress": {"address": destinatario_email}}],
+        },
+        "saveToSentItems": True,
+    }
+
+    if anexos_graph:
+        corpo["message"]["attachments"] = anexos_graph
+
+    try:
+        resposta = requests.post(
+            GRAPH_SEND_MAIL_URL,
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json",
+            },
+            json=corpo,
+            timeout=20,
+        )
+        if resposta.status_code == 202:
+            logger.info("E-mail (Outlook/Graph) de nova mensagem enviado para %s.", destinatario_email)
+            return True, None
+
+        motivo = f"HTTP {resposta.status_code}: {resposta.text[:300]}"
+        logger.warning("Falha ao enviar e-mail via Graph: %s", motivo)
+        return False, motivo
+    except requests.RequestException as erro:
+        logger.exception("Falha de rede ao enviar e-mail via Graph")
+        return False, f"{type(erro).__name__}: {erro}"

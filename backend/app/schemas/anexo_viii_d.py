@@ -46,6 +46,8 @@ class AnexoViiiDCreate(BaseModel):
     outros_texto: str | None = None
     motivacao: str
 
+    g_recaptcha_response: str = ""
+
     @field_validator(
         "processo_numero",
         "nome_empresarial",

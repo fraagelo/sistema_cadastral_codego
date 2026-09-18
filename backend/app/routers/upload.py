@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
@@ -10,6 +10,7 @@ from app.config import settings
 from app.models.orm import ProcessoDocumento, StatusProcesso
 from app.services.validacao_arquivos import validar_documento_assinado, salvar_arquivo
 from app.services.email_service import enviar_email_documento_assinado
+from app.services.recaptcha import verificar_recaptcha
 
 router = APIRouter()
 
@@ -34,9 +35,14 @@ def baixar_pdf_preenchido(processo_id: int, db: Session = Depends(get_db)):
 async def enviar_documento_assinado(
     processo_id: int,
     arquivo: UploadFile = File(...),
+    g_recaptcha_response: str = Form(default=""),
     db: Session = Depends(get_db),
 ):
     """Recebe o reenvio do documento assinado (Etapa 2 do fluxo)."""
+    recaptcha_ok, recaptcha_erro = verificar_recaptcha(g_recaptcha_response)
+    if not recaptcha_ok:
+        raise HTTPException(status_code=422, detail=recaptcha_erro)
+
     processo = db.query(ProcessoDocumento).filter(ProcessoDocumento.id == processo_id).first()
     if processo is None:
         raise HTTPException(status_code=404, detail="Processo não encontrado.")

@@ -166,6 +166,13 @@ function validateForm() {
     clearError('motivacao');
   }
 
+  if (typeof grecaptcha !== 'undefined' && !grecaptcha.getResponse()) {
+    setError('recaptcha', 'Confirme que você não é um robô.');
+    valid = false;
+  } else {
+    clearError('recaptcha');
+  }
+
   return valid;
 }
 
@@ -222,6 +229,7 @@ form.addEventListener('submit', async (event) => {
     solicitacoes: solicitacoes,
     outros_texto: outrosInput.value.trim() || null,
     motivacao: document.getElementById('motivacao').value.trim(),
+    g_recaptcha_response: typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '',
   };
 
   setLoading(true);
@@ -266,5 +274,8 @@ form.addEventListener('submit', async (event) => {
     );
   } finally {
     setLoading(false);
+    if (typeof grecaptcha !== 'undefined') {
+      grecaptcha.reset();
+    }
   }
 });

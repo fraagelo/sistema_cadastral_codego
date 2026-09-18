@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mensagens e Anexos — Sistema Cadastral CODEGO</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
   <div class="page">
@@ -86,6 +87,11 @@
             <p class="file-drop__hint">PDF, PNG ou JPG, até 10MB cada.</p>
             <p class="file-drop__selected" id="anexos-selecionado" hidden></p>
           </div>
+        </div>
+
+        <div class="field">
+          <div class="g-recaptcha" data-sitekey="6LfDd70tAAAAAFjlhE_5tSCFK7dW7xkm99fV3-1u"></div>
+          <p class="field__error" data-error-for="recaptcha"></p>
         </div>
 
         <div class="card__footer">
