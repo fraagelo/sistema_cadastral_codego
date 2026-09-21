@@ -70,6 +70,12 @@
         </div>
 
         <div class="field">
+          <label for="cep_busca">CEP (opcional — ajuda a preencher o endereço abaixo)</label>
+          <input type="text" id="cep_busca" placeholder="00000-000" inputmode="numeric" maxlength="9">
+          <p class="field__hint" id="cep_busca-status"></p>
+        </div>
+
+        <div class="field">
           <label for="endereco">Endereço</label>
           <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro, cidade-UF" required>
           <p class="field__error" data-error-for="endereco"></p>
@@ -122,6 +128,12 @@
           <label for="representante_cpf">CPF</label>
           <input type="text" id="representante_cpf" name="representante_cpf" inputmode="numeric" placeholder="000.000.000-00" required>
           <p class="field__error" data-error-for="representante_cpf"></p>
+        </div>
+
+        <div class="field">
+          <label for="representante_cep_busca">CEP (opcional — ajuda a preencher o endereço abaixo)</label>
+          <input type="text" id="representante_cep_busca" placeholder="00000-000" inputmode="numeric" maxlength="9">
+          <p class="field__hint" id="representante_cep_busca-status"></p>
         </div>
 
         <div class="field">

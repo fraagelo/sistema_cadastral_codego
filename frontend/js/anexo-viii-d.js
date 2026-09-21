@@ -50,6 +50,66 @@ document.getElementById('telefone').addEventListener('input', (e) => {
   e.target.value = maskTelefone(onlyDigits(e.target.value));
 });
 
+function maskCep(digits) {
+  return digits.slice(0, 8).replace(/(\d{5})(\d{1,3})$/, '$1-$2');
+}
+
+function configurarBuscaCep(cepInputId, statusId, enderecoInputId, campoErro) {
+  const cepInput = document.getElementById(cepInputId);
+  const statusEl = document.getElementById(statusId);
+  const enderecoInput = document.getElementById(enderecoInputId);
+
+  cepInput.addEventListener('input', (e) => {
+    e.target.value = maskCep(onlyDigits(e.target.value));
+    statusEl.textContent = '';
+    statusEl.className = 'field__hint';
+  });
+
+  cepInput.addEventListener('blur', async () => {
+    const cepDigits = onlyDigits(cepInput.value);
+    if (cepDigits.length !== 8) {
+      return;
+    }
+
+    statusEl.textContent = 'Buscando endereço...';
+    statusEl.className = 'field__hint';
+
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cepDigits}/json/`);
+      const dados = await response.json();
+
+      if (dados.erro) {
+        statusEl.textContent = 'CEP não encontrado. Preencha o endereço manualmente.';
+        statusEl.className = 'field__hint field__hint--warn';
+        return;
+      }
+
+      const partes = [dados.logradouro, dados.bairro, `${dados.localidade}-${dados.uf}`]
+        .filter((parte) => parte && parte.trim());
+      const enderecoEncontrado = partes.join(', ');
+
+      if (!enderecoInput.value.trim()) {
+        enderecoInput.value = enderecoEncontrado;
+      }
+
+      statusEl.textContent = `Endereço encontrado: ${enderecoEncontrado}. Complete com número/complemento, se necessário.`;
+      statusEl.className = 'field__hint field__hint--ok';
+      clearError(campoErro);
+    } catch (error) {
+      statusEl.textContent = 'Não foi possível consultar o CEP agora. Preencha o endereço manualmente.';
+      statusEl.className = 'field__hint field__hint--warn';
+    }
+  });
+}
+
+configurarBuscaCep('cep_busca', 'cep_busca-status', 'endereco', 'endereco');
+configurarBuscaCep(
+  'representante_cep_busca',
+  'representante_cep_busca-status',
+  'representante_endereco',
+  'representante_endereco'
+);
+
 checkOutros.addEventListener('change', () => {
   outrosWrapper.hidden = !checkOutros.checked;
   if (!checkOutros.checked) {
