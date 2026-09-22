@@ -25,6 +25,7 @@ class StatusProcesso(str, enum.Enum):
 
 class TipoDocumento(str, enum.Enum):
     ANEXO_VIII_D = "anexo_viii_d"
+    ANEXO_VIII_A = "anexo_viii_a"
 
 
 class Usuario(Base):
