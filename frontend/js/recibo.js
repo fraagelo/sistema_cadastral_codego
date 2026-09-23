@@ -82,8 +82,9 @@ async function consultarRecibo(protocolo) {
 
   document.getElementById('recibo-protocolo').textContent = `Protocolo: ${dataRecibo.protocolo}`;
   document.getElementById('recibo-data').textContent = formatarData(dataRecibo.data_hora);
-  document.getElementById('recibo-remetente').textContent =
-    `${dataRecibo.remetente_nome} (${dataRecibo.remetente_documento_mascarado})`;
+  document.getElementById('recibo-remetente').textContent = dataRecibo.remetente_documento_mascarado
+    ? `${dataRecibo.remetente_nome} (${dataRecibo.remetente_documento_mascarado})`
+    : dataRecibo.remetente_nome;
   document.getElementById('recibo-documento').textContent = 'Documento cadastral assinado';
   document.getElementById('recibo-declaracao').textContent = dataRecibo.declaracao;
 

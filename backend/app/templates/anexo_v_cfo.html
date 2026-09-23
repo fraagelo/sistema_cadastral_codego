@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 1.5cm 1.5cm 1.8cm;
+      @bottom-center {
+        content: counter(page) "/" counter(pages);
+        font-family: "Helvetica", "Arial", sans-serif;
+        font-size: 7.5pt;
+        color: #888;
+        margin-bottom: 0.4cm;
+      }
+    }
+    body {
+      font-family: "Helvetica", "Arial", sans-serif;
+      font-size: 10.5pt;
+      color: #1a1a1a;
+    }
+
+    /* Cabeçalho / timbre */
+    .timbre {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1.5pt solid #1f6d46;
+      padding-bottom: 10px;
+      margin-bottom: 18px;
+    }
+    .timbre img {
+      height: 40px;
+      width: auto;
+    }
+    .timbre__texto {
+      font-size: 8pt;
+      font-weight: bold;
+      color: #1f6d46;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .anexo-tag {
+      font-size: 9pt;
+      letter-spacing: 0.05em;
+      color: #1f6d46;
+      margin: 0 0 2px;
+    }
+    h1 {
+      font-size: 13pt;
+      text-transform: uppercase;
+      color: #123f28;
+      margin: 0 0 16px;
+    }
+
+    .titulo-formulario {
+      text-align: center;
+      font-weight: bold;
+      font-size: 10.5pt;
+      border: 1pt solid #333;
+      border-bottom: none;
+      padding: 6px;
+      margin: 0;
+    }
+    table.dados {
+      margin-top: 0;
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      margin-bottom: 22px;
+    }
+    table.dados td {
+      border: 1pt solid #333;
+      padding: 5px 8px;
+      vertical-align: top;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    table.dados td.rotulo {
+      width: 28%;
+      font-weight: bold;
+      background: #f2f2f2;
+    }
+
+    .data-cidade {
+      text-align: right;
+      margin-bottom: 18px;
+    }
+    .corpo {
+      text-align: justify;
+      line-height: 1.55;
+    }
+
+    .assinatura {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .assinatura .linha {
+      border-top: 1pt solid #333;
+      width: 65%;
+      margin: 0 auto 4px;
+    }
+    .assinatura p {
+      margin: 2px 0;
+    }
+
+    .protocolo {
+      position: fixed;
+      bottom: -1.1cm;
+      right: 2cm;
+      font-size: 7.5pt;
+      color: #888;
+    }
+
+    table.cronograma {
+      width: auto;
+      table-layout: fixed;
+      border-collapse: collapse;
+      margin-bottom: 18px;
+      font-size: 9pt;
+      page-break-inside: avoid;
+    }
+    table.cronograma th,
+    table.cronograma td {
+      border: 1pt solid #333;
+      padding: 4px 5px;
+      text-align: center;
+    }
+    table.cronograma th {
+      background: #f2f2f2;
+    }
+    table.cronograma col.col-servico {
+      width: 4.8cm;
+    }
+    table.cronograma col.col-mes {
+      width: 1.75cm;
+    }
+    table.cronograma td.servico,
+    table.cronograma th.servico {
+      text-align: left;
+    }
+    table.cronograma .referencia {
+      display: block;
+      font-weight: normal;
+      font-size: 7pt;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="timbre">
+    <img src="{{ brasao_data_uri }}" alt="Brasão CODEGO">
+    <div class="timbre__texto">
+      Companhia de Desenvolvimento<br>
+      Econômico de Goiás
+    </div>
+  </div>
+
+  <p class="anexo-tag">ANEXO V</p>
+  <h1>Modelo do Cronograma</h1>
+
+  <p class="titulo-formulario">Cronograma Físico da Obra (CFO)</p>
+  <table class="dados">
+    <tr>
+      <td class="rotulo">Nome da empresa</td>
+      <td colspan="3">{{ nome_empresa }}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">Endereço</td>
+      <td colspan="3">{{ endereco }}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">Área da Empresa</td>
+      <td colspan="3">{{ area_empresa }} m²</td>
+    </tr>
+    <tr>
+      <td class="rotulo">Área a ser Construída</td>
+      <td colspan="3">{{ area_construida }} m²</td>
+    </tr>
+    <tr>
+      <td class="rotulo">Previsão início das Obras</td>
+      <td>{{ inicio_obras }}</td>
+      <td class="rotulo">Previsão Término das Obras</td>
+      <td>{{ termino_obras }}</td>
+    </tr>
+  </table>
+
+  {% for bloco in blocos %}
+  <table class="cronograma">
+    <colgroup>
+      <col class="col-servico">
+      {% for mes in bloco.meses %}<col class="col-mes">{% endfor %}
+    </colgroup>
+    <tr>
+      <th class="servico"></th>
+      {% for trimestre in bloco.trimestres %}
+      <th colspan="{{ trimestre.colunas }}">{{ trimestre.rotulo }}</th>
+      {% endfor %}
+    </tr>
+    <tr>
+      <th class="servico">Serviços/ Mês</th>
+      {% for mes in bloco.meses %}
+      <th>{{ mes.rotulo }}<span class="referencia">{{ mes.referencia }}</span></th>
+      {% endfor %}
+    </tr>
+    {% for linha in bloco.linhas %}
+    <tr>
+      <td class="servico">{{ linha.descricao }}</td>
+      {% for celula in linha.celulas %}
+      <td>{{ celula }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+  {% endfor %}
+
+  <div class="protocolo">Protocolo interno: {{ protocolo }}</div>
+
+</body>
+</html>

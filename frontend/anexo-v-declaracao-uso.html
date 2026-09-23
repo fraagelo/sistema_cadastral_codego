@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anexo V — Declaração de Uso — Sistema Cadastral CODEGO</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <div class="page">
+
+    <header class="letterhead">
+      <img class="letterhead__mark" src="assets/brasao_codego.png" alt="Brasão da Companhia de Desenvolvimento Econômico de Goiás">
+      <div class="letterhead__text">
+        <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
+        <h1 class="letterhead__title">Anexo V — Declaração de Uso de Água e Esgoto</h1>
+      </div>
+    </header>
+
+    <ol class="stepper" aria-label="Etapas do processo">
+      <li class="stepper__item stepper__item--current">
+        <span class="stepper__index">1</span>
+        <span class="stepper__label">Cadastro</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">2</span>
+        <span class="stepper__label">Assinatura</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">3</span>
+        <span class="stepper__label">Recibo</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">4</span>
+        <span class="stepper__label">Mensagens</span>
+      </li>
+    </ol>
+
+    <main class="card">
+      <div class="card__intro">
+        <h2 class="card__title">Declaração de Uso da Rede de Abastecimento de Água e de Esgoto</h2>
+        <p class="card__desc">
+          Preencha todos os campos abaixo para gerar o documento em PDF no modelo oficial
+          da Declaração de Uso (Anexo V). Depois de gerado, baixe o arquivo, assine digitalmente ou
+          imprima e assine manualmente, e reenvie o documento assinado na etapa seguinte.
+        </p>
+      </div>
+
+      <form id="form-anexo-v-declaracao-uso" novalidate>
+
+        <h3 class="section-title">Dados da empresa</h3>
+
+        <div class="field">
+          <label for="processo_numero">Processo N°</label>
+          <input type="text" id="processo_numero" name="processo_numero" required>
+          <p class="field__error" data-error-for="processo_numero"></p>
+        </div>
+
+        <div class="field">
+          <label for="nome_empresarial">Nome Empresarial</label>
+          <input type="text" id="nome_empresarial" name="nome_empresarial" required>
+          <p class="field__error" data-error-for="nome_empresarial"></p>
+        </div>
+
+        <div class="field">
+          <label for="cnpj">CNPJ</label>
+          <input type="text" id="cnpj" name="cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" required>
+          <p class="field__error" data-error-for="cnpj"></p>
+        </div>
+
+        <div class="field">
+          <label for="cep_busca">CEP (opcional — ajuda a preencher o endereço abaixo)</label>
+          <input type="text" id="cep_busca" placeholder="00000-000" inputmode="numeric" maxlength="9">
+          <p class="field__hint" id="cep_busca-status"></p>
+        </div>
+
+        <div class="field">
+          <label for="endereco">Endereço</label>
+          <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro, cidade-UF" required>
+          <p class="field__error" data-error-for="endereco"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="telefone">Telefone</label>
+            <input type="tel" id="telefone" name="telefone" inputmode="tel" placeholder="(00) 00000-0000" required>
+            <p class="field__error" data-error-for="telefone"></p>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" autocomplete="email" required>
+            <p class="field__error" data-error-for="email"></p>
+          </div>
+        </div>
+
+        <h3 class="section-title">Representante legal</h3>
+
+        <div class="field">
+          <label for="representante_nome">Nome completo</label>
+          <input type="text" id="representante_nome" name="representante_nome" autocomplete="name" required>
+          <p class="field__error" data-error-for="representante_nome"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="representante_estado_civil">Estado civil</label>
+            <select id="representante_estado_civil" name="representante_estado_civil" required>
+              <option value="" disabled selected>Selecione</option>
+              <option value="Solteiro(a)">Solteiro(a)</option>
+              <option value="Casado(a)">Casado(a)</option>
+              <option value="Divorciado(a)">Divorciado(a)</option>
+              <option value="Viúvo(a)">Viúvo(a)</option>
+              <option value="União estável">União estável</option>
+            </select>
+            <p class="field__error" data-error-for="representante_estado_civil"></p>
+          </div>
+
+          <div class="field">
+            <label for="representante_rg">RG</label>
+            <input type="text" id="representante_rg" name="representante_rg" placeholder="0000000 SSP-UF" required>
+            <p class="field__error" data-error-for="representante_rg"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="representante_cpf">CPF</label>
+          <input type="text" id="representante_cpf" name="representante_cpf" inputmode="numeric" placeholder="000.000.000-00" required>
+          <p class="field__error" data-error-for="representante_cpf"></p>
+        </div>
+
+        <div class="field">
+          <label for="representante_cep_busca">CEP (opcional — ajuda a preencher o endereço abaixo)</label>
+          <input type="text" id="representante_cep_busca" placeholder="00000-000" inputmode="numeric" maxlength="9">
+          <p class="field__hint" id="representante_cep_busca-status"></p>
+        </div>
+
+        <div class="field">
+          <label for="representante_endereco">Endereço</label>
+          <input type="text" id="representante_endereco" name="representante_endereco" placeholder="Rua, número, bairro, cidade-UF" required>
+          <p class="field__error" data-error-for="representante_endereco"></p>
+        </div>
+
+        <div class="field">
+          <div class="g-recaptcha" data-sitekey="6LfDd70tAAAAAFjlhE_5tSCFK7dW7xkm99fV3-1u"></div>
+          <p class="field__error" data-error-for="recaptcha"></p>
+        </div>
+
+        <div class="card__footer">
+          <p class="card__footer-note">
+            Os dados são usados apenas para geração do documento e do protocolo deste processo.
+          </p>
+          <button type="submit" class="btn-primary" id="btn-submit">Gerar documento PDF</button>
+        </div>
+
+      </form>
+
+      <div class="feedback" id="feedback" role="status" aria-live="polite" hidden></div>
+
+    </main>
+
+  </div>
+
+  <script src="js/anexo-v-declaracao-uso.js"></script>
+</body>
+</html>

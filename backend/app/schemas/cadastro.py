@@ -19,7 +19,7 @@ class ProcessoOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    usuario_id: int
+    usuario_id: int | None
     protocolo: str
     tipo_documento: str
     status: str
@@ -30,6 +30,6 @@ class ProcessoOut(BaseModel):
 
 
 class CadastroResponse(BaseModel):
-    usuario: UsuarioOut
+    usuario: UsuarioOut | None
     processo: ProcessoOut
     pdf_download_url: str

@@ -60,19 +60,27 @@ async def enviar_documento_assinado(
     db.refresh(processo)
 
     dados_formulario = processo.dados_formulario or {}
-    nome_empresarial = dados_formulario.get("nome_empresarial") or processo.usuario.nome
+    nome_empresarial = (
+        dados_formulario.get("nome_empresarial")
+        or dados_formulario.get("nome_empresa")
+        or (processo.usuario.nome if processo.usuario else "")
+    )
 
     # Todos os documentos assinados são enviados para o e-mail fixo da empresa
     # (NOTIFICATION_EMAIL), não para o e-mail que a pessoa preencheu no cadastro.
-    # Se NOTIFICATION_EMAIL não estiver configurado, cai para o e-mail do cadastro.
-    destinatario = settings.notification_email or processo.usuario.email
+    # Se NOTIFICATION_EMAIL não estiver configurado, cai para o e-mail do cadastro
+    # (quando houver — o CFO, por exemplo, não pede e-mail).
+    destinatario = settings.notification_email or (processo.usuario.email if processo.usuario else "")
 
-    email_enviado, email_erro = enviar_email_documento_assinado(
-        destinatario_email=destinatario,
-        nome_empresarial=nome_empresarial,
-        protocolo=processo.protocolo,
-        caminho_pdf_assinado=caminho,
-    )
+    if destinatario:
+        email_enviado, email_erro = enviar_email_documento_assinado(
+            destinatario_email=destinatario,
+            nome_empresarial=nome_empresarial,
+            protocolo=processo.protocolo,
+            caminho_pdf_assinado=caminho,
+        )
+    else:
+        email_enviado, email_erro = False, "Nenhum e-mail de destino configurado (NOTIFICATION_EMAIL)."
 
     return {
         "mensagem": "Documento assinado recebido com sucesso.",

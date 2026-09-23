@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page {
+      size: A4;
+      margin: 2cm 2cm 2.2cm;
+      @bottom-center {
+        content: counter(page) "/" counter(pages);
+        font-family: "Helvetica", "Arial", sans-serif;
+        font-size: 7.5pt;
+        color: #888;
+        margin-bottom: 0.5cm;
+      }
+    }
+    body {
+      font-family: "Helvetica", "Arial", sans-serif;
+      font-size: 10.5pt;
+      color: #1a1a1a;
+    }
+
+    /* Cabeçalho / timbre */
+    .timbre {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1.5pt solid #1f6d46;
+      padding-bottom: 10px;
+      margin-bottom: 18px;
+    }
+    .timbre img {
+      height: 40px;
+      width: auto;
+    }
+    .timbre__texto {
+      font-size: 8pt;
+      font-weight: bold;
+      color: #1f6d46;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .anexo-tag {
+      font-size: 9pt;
+      letter-spacing: 0.05em;
+      color: #1f6d46;
+      margin: 0 0 2px;
+    }
+    h1 {
+      font-size: 13pt;
+      text-transform: uppercase;
+      color: #123f28;
+      margin: 0 0 16px;
+    }
+
+    .titulo-formulario {
+      text-align: center;
+      font-weight: bold;
+      font-size: 10.5pt;
+      border: 1pt solid #333;
+      border-bottom: none;
+      padding: 6px;
+      margin: 0;
+    }
+    table.dados {
+      margin-top: 0;
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      margin-bottom: 22px;
+    }
+    table.dados td {
+      border: 1pt solid #333;
+      padding: 5px 8px;
+      vertical-align: top;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    table.dados td.rotulo {
+      width: 28%;
+      font-weight: bold;
+      background: #f2f2f2;
+    }
+
+    .data-cidade {
+      text-align: right;
+      margin-bottom: 18px;
+    }
+    .corpo {
+      text-align: justify;
+      line-height: 1.55;
+    }
+
+    .assinatura {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .assinatura .linha {
+      border-top: 1pt solid #333;
+      width: 65%;
+      margin: 0 auto 4px;
+    }
+    .assinatura p {
+      margin: 2px 0;
+    }
+
+    .protocolo {
+      position: fixed;
+      bottom: -1.3cm;
+      right: 2cm;
+      font-size: 7.5pt;
+      color: #888;
+    }
+
+    h2.secao {
+      font-size: 11.5pt;
+      color: #123f28;
+      margin: 20px 0 8px;
+      page-break-after: avoid;
+    }
+    h3.subsecao {
+      font-size: 10.5pt;
+      margin: 14px 0 6px;
+      page-break-after: avoid;
+    }
+    ul.itens {
+      margin: 0 0 8px;
+      padding-left: 18px;
+    }
+    ul.itens li {
+      margin-bottom: 4px;
+      line-height: 1.45;
+      white-space: pre-line;
+    }
+    .observacao {
+      font-size: 9.5pt;
+      text-align: justify;
+      line-height: 1.45;
+      margin: 6px 0 10px 18px;
+      page-break-inside: avoid;
+    }
+    .observacao p {
+      margin: 0 0 4px;
+    }
+    .declaracao {
+      page-break-inside: avoid;
+    }
+    .rodape-rev {
+      position: fixed;
+      bottom: -1.3cm;
+      left: 0;
+      font-size: 7.5pt;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="timbre">
+    <img src="{{ brasao_data_uri }}" alt="Brasão CODEGO">
+    <div class="timbre__texto">
+      Companhia de Desenvolvimento<br>
+      Econômico de Goiás
+    </div>
+  </div>
+
+  <p class="anexo-tag">ANEXO VII</p>
+  <h1>Memorial de Caracterização do Empreendimento (MCE)</h1>
+
+  {% for secao in secoes %}
+  <h2 class="secao">{{ secao.titulo }}</h2>
+    {% for subsecao in secao.subsecoes %}
+    <h3 class="subsecao">{{ subsecao.titulo }}</h3>
+    <ul class="itens">
+      {% for item in subsecao.itens %}
+      <li><strong>{{ item.rotulo }}:</strong> {{ item.valor }}</li>
+      {% endfor %}
+    </ul>
+      {% if subsecao.observacao %}
+      <div class="observacao">
+        <p><strong>{{ subsecao.observacao_titulo }}</strong></p>
+        {% for paragrafo in subsecao.observacao %}
+        <p>{{ paragrafo }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+
+  <div class="declaracao">
+    <h2 class="secao">6. DECLARAÇÃO</h2>
+
+    <p class="corpo">
+      Declaramos, sob as penas da lei, que as informações prestadas neste Memorial de
+      Caracterização do Empreendimento (MCE) são verdadeiras e precisas.
+    </p>
+
+    <p class="corpo"><strong>Local e Data:</strong> {{ local_data }}</p>
+
+    <div class="assinatura">
+      <div class="linha"></div>
+      <p>{{ responsavel_nome }}</p>
+      <p>{{ responsavel_cargo }}</p>
+      <p>{{ razao_social }} — CNPJ {{ cnpj }}</p>
+    </div>
+  </div>
+
+  <div class="rodape-rev">Modelo MCE Rev. 2 – 22/02/2024</div>
+  <div class="protocolo">Protocolo interno: {{ protocolo }}</div>
+
+</body>
+</html>

@@ -7,7 +7,7 @@ class ReciboOut(BaseModel):
     protocolo: str
     data_hora: datetime
     remetente_nome: str
-    remetente_documento_mascarado: str
+    remetente_documento_mascarado: str | None
     declaracao: str
     arquivos: list[str]
 

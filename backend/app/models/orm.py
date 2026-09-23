@@ -26,6 +26,10 @@ class StatusProcesso(str, enum.Enum):
 class TipoDocumento(str, enum.Enum):
     ANEXO_VIII_D = "anexo_viii_d"
     ANEXO_VIII_A = "anexo_viii_a"
+    ANEXO_III = "anexo_iii"
+    ANEXO_V_DECLARACAO_USO = "anexo_v_declaracao_uso"
+    ANEXO_V_CFO = "anexo_v_cfo"
+    ANEXO_VII_MCE = "anexo_vii_mce"
 
 
 class Usuario(Base):
@@ -46,7 +50,9 @@ class ProcessoDocumento(Base):
     __tablename__ = "processos_documentos"
 
     id = Column(Integer, primary_key=True, index=True)
-    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    # Opcional: formulários cujo modelo oficial não pede CNPJ/e-mail (ex.: CFO)
+    # não geram cadastro de usuário/empresa.
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=True)
     protocolo = Column(String(50), nullable=False, unique=True, index=True)
     tipo_documento = Column(
         Enum(TipoDocumento, values_callable=lambda enum_cls: [e.value for e in enum_cls]),
