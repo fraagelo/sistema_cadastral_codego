@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page {
+      size: A4;
+      margin: 1.6cm 1.8cm 2cm;
+      @bottom-right {
+        content: "Protocolo interno: {{ protocolo }}";
+        font-size: 7.5pt;
+        color: #888;
+      }
+    }
+    body {
+      font-family: "Helvetica", "Arial", sans-serif;
+      font-size: 9pt;
+      color: #1a1a1a;
+    }
+
+    .timbre {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1.5pt solid #1f6d46;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .timbre img {
+      height: 34px;
+      width: auto;
+    }
+    .timbre__texto {
+      font-size: 7.5pt;
+      font-weight: bold;
+      color: #1f6d46;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .anexo-tag {
+      font-size: 8.5pt;
+      letter-spacing: 0.05em;
+      color: #1f6d46;
+      margin: 0 0 2px;
+    }
+    h1 {
+      font-size: 12pt;
+      text-transform: uppercase;
+      color: #123f28;
+      margin: 0 0 10px;
+    }
+
+    table.dados {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+    table.dados caption {
+      font-weight: bold;
+      font-size: 8.5pt;
+      background: #123f28;
+      color: #fff;
+      padding: 4px 8px;
+      text-align: left;
+      caption-side: top;
+    }
+    table.dados td {
+      border: 1pt solid #ccc;
+      padding: 3px 8px;
+      vertical-align: top;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    table.dados td.rotulo {
+      width: 38%;
+      font-weight: bold;
+      background: #f7f7f5;
+    }
+
+    .assinaturas {
+      margin-top: 24px;
+      width: 100%;
+      display: table;
+      table-layout: fixed;
+    }
+    .assinaturas .coluna {
+      display: table-cell;
+      width: 50%;
+      text-align: center;
+      padding: 0 10px;
+    }
+    .assinaturas .linha {
+      border-top: 1pt solid #333;
+      margin: 0 0 4px;
+    }
+    .assinaturas p {
+      margin: 2px 0;
+      font-size: 8.5pt;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="timbre">
+    <img src="{{ brasao_data_uri }}" alt="Brasão CODEGO">
+    <div class="timbre__texto">
+      Companhia de Desenvolvimento<br>
+      Econômico de Goiás
+    </div>
+  </div>
+
+  <p class="anexo-tag">ANEXO IX</p>
+  <h1>Formulário de Atualização Cadastral Anual</h1>
+
+  <table class="dados">
+    <caption>Formulário de Atualização Cadastral Anual</caption>
+    <tr><td class="rotulo">Técnico Responsável</td><td>{{ tecnico_responsavel }}</td></tr>
+    <tr><td class="rotulo">Data</td><td>{{ cidade_data }}</td></tr>
+  </table>
+
+  <table class="dados">
+    <caption>Informações Cadastrais Gerais</caption>
+    <tr><td class="rotulo">Nome Empresarial</td><td>{{ nome_empresarial }}</td></tr>
+    <tr><td class="rotulo">CNPJ</td><td>{{ cnpj }}</td></tr>
+    <tr><td class="rotulo">Endereço</td><td>{{ endereco }}</td></tr>
+    <tr><td class="rotulo">Distrito</td><td>{{ distrito }}</td></tr>
+    <tr><td class="rotulo">Telefone</td><td>{{ telefone }}</td></tr>
+    <tr><td class="rotulo">Email</td><td>{{ email }}</td></tr>
+    <tr><td class="rotulo">Responsável</td><td>{{ responsavel }}</td></tr>
+    <tr><td class="rotulo">Nº de funcionários</td><td>{{ num_funcionarios }}</td></tr>
+    <tr><td class="rotulo">Nº de matrículas do imóvel</td><td>{{ num_matriculas_imovel }}</td></tr>
+    <tr><td class="rotulo">Área total (m²)</td><td>{{ area_total_m2 }}</td></tr>
+    <tr><td class="rotulo">Área ocupada (m²)</td><td>{{ area_ocupada_m2 }}</td></tr>
+    <tr><td class="rotulo">Taxa ocupação</td><td>{{ taxa_ocupacao }}</td></tr>
+    <tr><td class="rotulo">Em frente à empresa, no distrito, existe asfalto?</td><td>{{ asfalto_frente }}</td></tr>
+    <tr>
+      <td class="rotulo">Status de operação</td>
+      <td>
+        {{ status_operacao }}
+        {%- if status_operacao == "Em recesso" %} — Prazo para o fim: {{ status_operacao_prazo_dias }} dias{% endif %}
+        {%- if status_operacao == "Paralisada" %} — Desde o mês: {{ status_operacao_paralisada_mes }}{% endif %}
+        {%- if status_operacao == "Outro" %}: {{ status_operacao_outro_texto }}{% endif %}
+      </td>
+    </tr>
+  </table>
+
+  <table class="dados">
+    <caption>Informações de Saneamento</caption>
+    <tr>
+      <td class="rotulo">Possui hidrômetro?</td>
+      <td>{{ possui_hidrometro }}{% if possui_hidrometro == "Sim" %}. Quantos? {{ hidrometro_quantos }}{% endif %}</td>
+    </tr>
+    {% if possui_hidrometro == "Sim" %}
+    <tr><td class="rotulo">Nº do hidrômetro (1)</td><td>{{ hidrometro_1_numero or "—" }} — Faturamento médio dos últimos 12 meses: R$ {{ hidrometro_1_faturamento or "—" }}</td></tr>
+    <tr><td class="rotulo">Nº do hidrômetro (2)</td><td>{{ hidrometro_2_numero or "—" }} — Faturamento médio dos últimos 12 meses: R$ {{ hidrometro_2_faturamento or "—" }}</td></tr>
+    {% endif %}
+    <tr>
+      <td class="rotulo">Possui poço artesiano?</td>
+      <td>{{ possui_poco_artesiano }}{% if possui_poco_artesiano == "Sim" %}. Possui outorga? {{ poco_possui_outorga }}{% endif %}</td>
+    </tr>
+    {% if poco_possui_outorga == "Sim" %}
+    <tr><td class="rotulo">Em caso de outorga</td><td>Vigência: {{ outorga_vigencia }} — Vazão: {{ outorga_vazao or "—" }}</td></tr>
+    {% endif %}
+    <tr>
+      <td class="rotulo">Quem é o responsável pelo abastecimento de água da sua empresa?</td>
+      <td>{{ responsavel_abastecimento }}{% if responsavel_abastecimento == "Município" %}: {{ responsavel_abastecimento_municipio }}{% endif %}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">Possui ETE?</td>
+      <td>{{ possui_ete }}{% if possui_ete == "Sim" %} — Está ativa? {{ ete_ativa }}{% endif %}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">Possui medidor de vazão?</td>
+      <td>{{ possui_medidor_vazao }}{% if possui_medidor_vazao == "Outro" %}: {{ medidor_vazao_outro_texto }}{% endif %}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">Qual é a empresa responsável pela coleta e tratamento do esgoto?</td>
+      <td>{{ responsavel_esgoto }}{% if responsavel_esgoto == "Outro" %}: {{ responsavel_esgoto_outro_texto }}{% endif %}</td>
+    </tr>
+  </table>
+
+  <table class="dados">
+    <caption>Licenças</caption>
+    <tr><td class="rotulo">Licença prévia</td><td>{{ licenca_previa }}{% if licenca_previa == "Sim" %} — vigência {{ licenca_previa_vigencia }}{% endif %}</td></tr>
+    <tr><td class="rotulo">Licença de instalação</td><td>{{ licenca_instalacao }}{% if licenca_instalacao == "Sim" %} — vigência {{ licenca_instalacao_vigencia }}{% endif %}</td></tr>
+    <tr><td class="rotulo">Licença de operação</td><td>{{ licenca_operacao }}{% if licenca_operacao == "Sim" %} — vigência {{ licenca_operacao_vigencia }}{% endif %}</td></tr>
+    <tr><td class="rotulo">Licenciamento Corpo de Bombeiros</td><td>{{ licenciamento_bombeiros }}{% if licenciamento_bombeiros == "Sim" %} — vigência {{ licenciamento_bombeiros_vigencia }}{% endif %}</td></tr>
+    <tr><td class="rotulo">Certidão de uso do solo</td><td>{{ certidao_uso_solo }}{% if certidao_uso_solo == "Sim" %} — vigência {{ certidao_uso_solo_vigencia }}{% endif %}</td></tr>
+    <tr><td class="rotulo">Alvará Sanitário</td><td>{{ alvara_sanitario }}{% if alvara_sanitario == "Sim" %} — vigência {{ alvara_sanitario_vigencia }}{% endif %}</td></tr>
+  </table>
+
+  <div class="assinaturas">
+    <div class="coluna">
+      <div class="linha"></div>
+      <p>Assinatura do(a) representante legal</p>
+      <p>{{ nome_empresarial }} (com carimbo CNPJ)</p>
+    </div>
+    <div class="coluna">
+      <div class="linha"></div>
+      <p>Assinatura do(a) responsável técnico</p>
+      <p>{{ responsavel_tecnico_nome }}</p>
+      <p>{{ responsavel_tecnico_registro }}</p>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -30,6 +30,9 @@ class TipoDocumento(str, enum.Enum):
     ANEXO_V_DECLARACAO_USO = "anexo_v_declaracao_uso"
     ANEXO_V_CFO = "anexo_v_cfo"
     ANEXO_VII_MCE = "anexo_vii_mce"
+    ANEXO_VIII_B = "anexo_viii_b"
+    ANEXO_VIII_C = "anexo_viii_c"
+    ANEXO_IX = "anexo_ix"
 
 
 class Usuario(Base):

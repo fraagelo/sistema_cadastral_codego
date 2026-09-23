@@ -8,10 +8,13 @@ from weasyprint import HTML
 from app.config import settings
 from app.schemas.anexo_viii_d import AnexoViiiDCreate, SOLICITACOES_ANEXO_VIII_D
 from app.schemas.anexo_viii_a import AnexoViiiACreate
+from app.schemas.anexo_viii_b import AnexoViiiBCreate
+from app.schemas.anexo_viii_c import AnexoViiiCCreate
 from app.schemas.anexo_iii import AnexoIiiCreate, DOCUMENTOS_ANEXO_III
 from app.schemas.anexo_v_declaracao_uso import AnexoVDeclaracaoUsoCreate
 from app.schemas.anexo_v_cfo import AnexoVCfoCreate
 from app.schemas.anexo_vii_mce import AnexoViiMceCreate, MCE_ESTRUTURA
+from app.schemas.anexo_ix import AnexoIXCreate
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "..", "templates")
 _env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
@@ -356,6 +359,158 @@ def gerar_pdf_anexo_vii_mce(dados: AnexoViiMceCreate, protocolo: str) -> str:
 
     os.makedirs(settings.upload_dir, exist_ok=True)
     nome_arquivo = f"{protocolo}_anexo_vii_mce.pdf"
+    caminho_completo = os.path.join(settings.upload_dir, nome_arquivo)
+
+    HTML(string=html_renderizado).write_pdf(caminho_completo)
+
+    return caminho_completo
+
+
+def gerar_pdf_anexo_viii_b(dados: AnexoViiiBCreate, protocolo: str) -> str:
+    """
+    Renderiza o template do Anexo VIII-B (Pedido de Anuência para Remembramento/
+    Desmembramento de Área) preenchido com os dados reais do requerimento, e gera
+    o PDF em disco. Retorna o caminho do arquivo gerado.
+    """
+    template = _env.get_template("anexo_viii_b.html")
+
+    html_renderizado = template.render(
+        brasao_data_uri=_BRASAO_DATA_URI,
+        protocolo=protocolo,
+        processo_numero=dados.processo_numero,
+        nome_empresarial=dados.nome_empresarial,
+        cnpj=_formatar_cnpj(dados.cnpj),
+        endereco=dados.endereco,
+        telefone=_formatar_telefone(dados.telefone),
+        email=dados.email,
+        cidade_data=datetime.now().strftime("Goiânia, %d/%m/%Y"),
+        representante_nome=dados.representante_nome,
+        representante_estado_civil=dados.representante_estado_civil,
+        representante_rg=dados.representante_rg,
+        representante_cpf=_formatar_cpf(dados.representante_cpf),
+        representante_endereco=dados.representante_endereco,
+        tipo_operacao=dados.tipo_operacao,
+        area_via=dados.area_via,
+        area_modulos=dados.area_modulos,
+        area_quadra=dados.area_quadra,
+        area_distrito=dados.area_distrito,
+        area_total_m2=dados.area_total_m2,
+        justificativa=dados.justificativa,
+    )
+
+    os.makedirs(settings.upload_dir, exist_ok=True)
+    nome_arquivo = f"{protocolo}_anexo_viii_b.pdf"
+    caminho_completo = os.path.join(settings.upload_dir, nome_arquivo)
+
+    HTML(string=html_renderizado).write_pdf(caminho_completo)
+
+    return caminho_completo
+
+
+def gerar_pdf_anexo_viii_c(dados: AnexoViiiCCreate, protocolo: str) -> str:
+    """
+    Renderiza o template do Anexo VIII-C (Pedido de Anuência para Fusão, Cisão,
+    Incorporação, Mudança do Quadro Societário, Mudança da Atividade Econômica e
+    demais alterações do Contrato Social) preenchido com os dados reais do
+    requerimento, e gera o PDF em disco. Retorna o caminho do arquivo gerado.
+    """
+    template = _env.get_template("anexo_viii_c.html")
+
+    html_renderizado = template.render(
+        brasao_data_uri=_BRASAO_DATA_URI,
+        protocolo=protocolo,
+        processo_numero=dados.processo_numero,
+        nome_empresarial=dados.nome_empresarial,
+        cnpj=_formatar_cnpj(dados.cnpj),
+        endereco=dados.endereco,
+        telefone=_formatar_telefone(dados.telefone),
+        email=dados.email,
+        cidade_data=datetime.now().strftime("Goiânia, %d/%m/%Y"),
+        representante_nome=dados.representante_nome,
+        representante_estado_civil=dados.representante_estado_civil,
+        representante_rg=dados.representante_rg,
+        representante_cpf=_formatar_cpf(dados.representante_cpf),
+        representante_endereco=dados.representante_endereco,
+        tipo_alteracao=dados.tipo_alteracao,
+        outra_alteracao_texto=dados.outra_alteracao_texto,
+        justificativa=dados.justificativa,
+    )
+
+    os.makedirs(settings.upload_dir, exist_ok=True)
+    nome_arquivo = f"{protocolo}_anexo_viii_c.pdf"
+    caminho_completo = os.path.join(settings.upload_dir, nome_arquivo)
+
+    HTML(string=html_renderizado).write_pdf(caminho_completo)
+
+    return caminho_completo
+
+
+def gerar_pdf_anexo_ix(dados: AnexoIXCreate, protocolo: str) -> str:
+    """
+    Renderiza o template do Anexo IX (Formulário de Atualização Cadastral Anual)
+    preenchido com os dados reais do requerimento, e gera o PDF em disco. Retorna
+    o caminho do arquivo gerado.
+    """
+    template = _env.get_template("anexo_ix.html")
+
+    html_renderizado = template.render(
+        brasao_data_uri=_BRASAO_DATA_URI,
+        protocolo=protocolo,
+        cidade_data=datetime.now().strftime("Goiânia, %d/%m/%Y"),
+        tecnico_responsavel=dados.tecnico_responsavel,
+        nome_empresarial=dados.nome_empresarial,
+        cnpj=_formatar_cnpj(dados.cnpj),
+        endereco=dados.endereco,
+        distrito=dados.distrito,
+        telefone=_formatar_telefone(dados.telefone),
+        email=dados.email,
+        responsavel=dados.responsavel,
+        num_funcionarios=dados.num_funcionarios,
+        num_matriculas_imovel=dados.num_matriculas_imovel,
+        area_total_m2=dados.area_total_m2,
+        area_ocupada_m2=dados.area_ocupada_m2,
+        taxa_ocupacao=dados.taxa_ocupacao,
+        asfalto_frente=dados.asfalto_frente,
+        status_operacao=dados.status_operacao,
+        status_operacao_prazo_dias=dados.status_operacao_prazo_dias,
+        status_operacao_paralisada_mes=dados.status_operacao_paralisada_mes,
+        status_operacao_outro_texto=dados.status_operacao_outro_texto,
+        possui_hidrometro=dados.possui_hidrometro,
+        hidrometro_quantos=dados.hidrometro_quantos,
+        hidrometro_1_numero=dados.hidrometro_1_numero,
+        hidrometro_1_faturamento=dados.hidrometro_1_faturamento,
+        hidrometro_2_numero=dados.hidrometro_2_numero,
+        hidrometro_2_faturamento=dados.hidrometro_2_faturamento,
+        possui_poco_artesiano=dados.possui_poco_artesiano,
+        poco_possui_outorga=dados.poco_possui_outorga,
+        outorga_vigencia=dados.outorga_vigencia,
+        outorga_vazao=dados.outorga_vazao,
+        responsavel_abastecimento=dados.responsavel_abastecimento,
+        responsavel_abastecimento_municipio=dados.responsavel_abastecimento_municipio,
+        possui_ete=dados.possui_ete,
+        ete_ativa=dados.ete_ativa,
+        possui_medidor_vazao=dados.possui_medidor_vazao,
+        medidor_vazao_outro_texto=dados.medidor_vazao_outro_texto,
+        responsavel_esgoto=dados.responsavel_esgoto,
+        responsavel_esgoto_outro_texto=dados.responsavel_esgoto_outro_texto,
+        licenca_previa=dados.licenca_previa,
+        licenca_previa_vigencia=dados.licenca_previa_vigencia,
+        licenca_instalacao=dados.licenca_instalacao,
+        licenca_instalacao_vigencia=dados.licenca_instalacao_vigencia,
+        licenca_operacao=dados.licenca_operacao,
+        licenca_operacao_vigencia=dados.licenca_operacao_vigencia,
+        licenciamento_bombeiros=dados.licenciamento_bombeiros,
+        licenciamento_bombeiros_vigencia=dados.licenciamento_bombeiros_vigencia,
+        certidao_uso_solo=dados.certidao_uso_solo,
+        certidao_uso_solo_vigencia=dados.certidao_uso_solo_vigencia,
+        alvara_sanitario=dados.alvara_sanitario,
+        alvara_sanitario_vigencia=dados.alvara_sanitario_vigencia,
+        responsavel_tecnico_nome=dados.responsavel_tecnico_nome,
+        responsavel_tecnico_registro=dados.responsavel_tecnico_registro,
+    )
+
+    os.makedirs(settings.upload_dir, exist_ok=True)
+    nome_arquivo = f"{protocolo}_anexo_ix.pdf"
     caminho_completo = os.path.join(settings.upload_dir, nome_arquivo)
 
     HTML(string=html_renderizado).write_pdf(caminho_completo)

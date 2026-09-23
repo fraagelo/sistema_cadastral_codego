@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anexo IX — Sistema Cadastral CODEGO</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <div class="page">
+
+    <header class="letterhead">
+      <img class="letterhead__mark" src="assets/brasao_codego.png" alt="Brasão da Companhia de Desenvolvimento Econômico de Goiás">
+      <div class="letterhead__text">
+        <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
+        <h1 class="letterhead__title">Anexo IX — Atualização Cadastral Anual</h1>
+      </div>
+    </header>
+
+    <ol class="stepper" aria-label="Etapas do processo">
+      <li class="stepper__item stepper__item--current">
+        <span class="stepper__index">1</span>
+        <span class="stepper__label">Cadastro</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">2</span>
+        <span class="stepper__label">Assinatura</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">3</span>
+        <span class="stepper__label">Recibo</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">4</span>
+        <span class="stepper__label">Mensagens</span>
+      </li>
+    </ol>
+
+    <main class="card">
+      <div class="card__intro">
+        <h2 class="card__title">Formulário de Atualização Cadastral Anual</h2>
+        <p class="card__desc">
+          Preencha todos os campos abaixo para gerar o documento em PDF no modelo oficial
+          do Anexo IX.
+        </p>
+      </div>
+
+      <form id="form-anexo-ix" novalidate>
+
+        <h3 class="section-title">Cabeçalho</h3>
+
+        <div class="field">
+          <label for="tecnico_responsavel">Técnico Responsável</label>
+          <input type="text" id="tecnico_responsavel" name="tecnico_responsavel" required>
+          <p class="field__error" data-error-for="tecnico_responsavel"></p>
+        </div>
+
+        <h3 class="section-title">Informações cadastrais gerais</h3>
+
+        <div class="field">
+          <label for="nome_empresarial">Nome Empresarial</label>
+          <input type="text" id="nome_empresarial" name="nome_empresarial" required>
+          <p class="field__error" data-error-for="nome_empresarial"></p>
+        </div>
+
+        <div class="field">
+          <label for="cnpj">CNPJ</label>
+          <input type="text" id="cnpj" name="cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" required>
+          <p class="field__error" data-error-for="cnpj"></p>
+        </div>
+
+        <div class="field">
+          <label for="cep_busca">CEP (opcional — ajuda a preencher o endereço abaixo)</label>
+          <input type="text" id="cep_busca" placeholder="00000-000" inputmode="numeric" maxlength="9">
+          <p class="field__hint" id="cep_busca-status"></p>
+        </div>
+
+        <div class="field">
+          <label for="endereco">Endereço</label>
+          <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro, cidade-UF" required>
+          <p class="field__error" data-error-for="endereco"></p>
+        </div>
+
+        <div class="field">
+          <label for="distrito">Distrito</label>
+          <input type="text" id="distrito" name="distrito" required>
+          <p class="field__error" data-error-for="distrito"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="telefone">Telefone</label>
+            <input type="tel" id="telefone" name="telefone" inputmode="tel" placeholder="(00) 00000-0000" required>
+            <p class="field__error" data-error-for="telefone"></p>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" autocomplete="email" required>
+            <p class="field__error" data-error-for="email"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="responsavel">Responsável</label>
+          <input type="text" id="responsavel" name="responsavel" required>
+          <p class="field__error" data-error-for="responsavel"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="num_funcionarios">Nº de funcionários</label>
+            <input type="text" id="num_funcionarios" name="num_funcionarios" inputmode="numeric" required>
+            <p class="field__error" data-error-for="num_funcionarios"></p>
+          </div>
+
+          <div class="field">
+            <label for="num_matriculas_imovel">Nº de matrículas do imóvel</label>
+            <input type="text" id="num_matriculas_imovel" name="num_matriculas_imovel" required>
+            <p class="field__error" data-error-for="num_matriculas_imovel"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="area_total_m2">Área total (m²)</label>
+            <input type="text" id="area_total_m2" name="area_total_m2" inputmode="decimal" required>
+            <p class="field__error" data-error-for="area_total_m2"></p>
+          </div>
+
+          <div class="field">
+            <label for="area_ocupada_m2">Área ocupada (m²)</label>
+            <input type="text" id="area_ocupada_m2" name="area_ocupada_m2" inputmode="decimal" required>
+            <p class="field__error" data-error-for="area_ocupada_m2"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="taxa_ocupacao">Taxa ocupação</label>
+          <input type="text" id="taxa_ocupacao" name="taxa_ocupacao" placeholder="Ex.: 50%" required>
+          <p class="field__error" data-error-for="taxa_ocupacao"></p>
+        </div>
+
+        <div class="field">
+          <label for="asfalto_frente">Em frente à empresa, no distrito, existe asfalto?</label>
+          <select id="asfalto_frente" name="asfalto_frente" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+            <option value="Parcialmente">Parcialmente</option>
+          </select>
+          <p class="field__error" data-error-for="asfalto_frente"></p>
+        </div>
+
+        <div class="field">
+          <label for="status_operacao">Status de operação</label>
+          <select id="status_operacao" name="status_operacao" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="Em operação">Em operação</option>
+            <option value="Em recesso">Em recesso</option>
+            <option value="Paralisada">Paralisada</option>
+            <option value="Outro">Outro</option>
+          </select>
+          <p class="field__error" data-error-for="status_operacao"></p>
+        </div>
+
+        <div class="field" id="status_operacao_prazo_dias-wrapper" hidden>
+          <label for="status_operacao_prazo_dias">Prazo para o fim do recesso (dias)</label>
+          <input type="text" id="status_operacao_prazo_dias" name="status_operacao_prazo_dias" inputmode="numeric">
+          <p class="field__error" data-error-for="status_operacao_prazo_dias"></p>
+        </div>
+
+        <div class="field" id="status_operacao_paralisada_mes-wrapper" hidden>
+          <label for="status_operacao_paralisada_mes">Paralisada desde o mês</label>
+          <input type="text" id="status_operacao_paralisada_mes" name="status_operacao_paralisada_mes">
+          <p class="field__error" data-error-for="status_operacao_paralisada_mes"></p>
+        </div>
+
+        <div class="field" id="status_operacao_outro_texto-wrapper" hidden>
+          <label for="status_operacao_outro_texto">Descreva</label>
+          <input type="text" id="status_operacao_outro_texto" name="status_operacao_outro_texto">
+          <p class="field__error" data-error-for="status_operacao_outro_texto"></p>
+        </div>
+
+        <h3 class="section-title">Informações de saneamento</h3>
+
+        <div class="field">
+          <label for="possui_hidrometro">Possui hidrômetro?</label>
+          <select id="possui_hidrometro" name="possui_hidrometro" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+          </select>
+          <p class="field__error" data-error-for="possui_hidrometro"></p>
+        </div>
+
+        <div id="hidrometro-detalhes" hidden>
+          <div class="field">
+            <label for="hidrometro_quantos">Quantos?</label>
+            <input type="text" id="hidrometro_quantos" name="hidrometro_quantos" inputmode="numeric">
+            <p class="field__error" data-error-for="hidrometro_quantos"></p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="hidrometro_1_numero">Nº do hidrômetro (1)</label>
+              <input type="text" id="hidrometro_1_numero" name="hidrometro_1_numero">
+            </div>
+            <div class="field">
+              <label for="hidrometro_1_faturamento">Faturamento médio (últimos 12 meses) R$</label>
+              <input type="text" id="hidrometro_1_faturamento" name="hidrometro_1_faturamento" inputmode="decimal">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="hidrometro_2_numero">Nº do hidrômetro (2)</label>
+              <input type="text" id="hidrometro_2_numero" name="hidrometro_2_numero">
+            </div>
+            <div class="field">
+              <label for="hidrometro_2_faturamento">Faturamento médio (últimos 12 meses) R$</label>
+              <input type="text" id="hidrometro_2_faturamento" name="hidrometro_2_faturamento" inputmode="decimal">
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="possui_poco_artesiano">Possui poço artesiano?</label>
+          <select id="possui_poco_artesiano" name="possui_poco_artesiano" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+          </select>
+          <p class="field__error" data-error-for="possui_poco_artesiano"></p>
+        </div>
+
+        <div class="field" id="poco_possui_outorga-wrapper" hidden>
+          <label for="poco_possui_outorga">Possui outorga?</label>
+          <select id="poco_possui_outorga" name="poco_possui_outorga">
+            <option value="" disabled selected>Selecione</option>
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+          </select>
+          <p class="field__error" data-error-for="poco_possui_outorga"></p>
+        </div>
+
+        <div class="field-row" id="outorga-detalhes" hidden>
+          <div class="field">
+            <label for="outorga_vigencia">Vigência da outorga</label>
+            <input type="text" id="outorga_vigencia" name="outorga_vigencia">
+            <p class="field__error" data-error-for="outorga_vigencia"></p>
+          </div>
+          <div class="field">
+            <label for="outorga_vazao">Vazão</label>
+            <input type="text" id="outorga_vazao" name="outorga_vazao">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="responsavel_abastecimento">Quem é o responsável pelo abastecimento de água da sua empresa?</label>
+          <select id="responsavel_abastecimento" name="responsavel_abastecimento" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="CODEGO">CODEGO</option>
+            <option value="SANEAGO">SANEAGO</option>
+            <option value="Município">Município</option>
+            <option value="Não se aplica">Não se aplica</option>
+          </select>
+          <p class="field__error" data-error-for="responsavel_abastecimento"></p>
+        </div>
+
+        <div class="field" id="responsavel_abastecimento_municipio-wrapper" hidden>
+          <label for="responsavel_abastecimento_municipio">Qual município?</label>
+          <input type="text" id="responsavel_abastecimento_municipio" name="responsavel_abastecimento_municipio">
+          <p class="field__error" data-error-for="responsavel_abastecimento_municipio"></p>
+        </div>
+
+        <div class="field">
+          <label for="possui_ete">Possui ETE?</label>
+          <select id="possui_ete" name="possui_ete" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+          </select>
+          <p class="field__error" data-error-for="possui_ete"></p>
+        </div>
+
+        <div class="field" id="ete_ativa-wrapper" hidden>
+          <label for="ete_ativa">Caso possua, está ativa?</label>
+          <select id="ete_ativa" name="ete_ativa">
+            <option value="" disabled selected>Selecione</option>
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+          </select>
+          <p class="field__error" data-error-for="ete_ativa"></p>
+        </div>
+
+        <div class="field">
+          <label for="possui_medidor_vazao">Possui medidor de vazão?</label>
+          <select id="possui_medidor_vazao" name="possui_medidor_vazao" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+            <option value="Outro">Outro</option>
+          </select>
+          <p class="field__error" data-error-for="possui_medidor_vazao"></p>
+        </div>
+
+        <div class="field" id="medidor_vazao_outro_texto-wrapper" hidden>
+          <label for="medidor_vazao_outro_texto">Descreva</label>
+          <input type="text" id="medidor_vazao_outro_texto" name="medidor_vazao_outro_texto">
+          <p class="field__error" data-error-for="medidor_vazao_outro_texto"></p>
+        </div>
+
+        <div class="field">
+          <label for="responsavel_esgoto">Qual é a empresa responsável pela coleta e tratamento do esgoto?</label>
+          <select id="responsavel_esgoto" name="responsavel_esgoto" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="Não se aplica">Não se aplica</option>
+            <option value="CODEGO">CODEGO</option>
+            <option value="SANEAGO">SANEAGO</option>
+            <option value="Outro">Outro</option>
+          </select>
+          <p class="field__error" data-error-for="responsavel_esgoto"></p>
+        </div>
+
+        <div class="field" id="responsavel_esgoto_outro_texto-wrapper" hidden>
+          <label for="responsavel_esgoto_outro_texto">Descreva</label>
+          <input type="text" id="responsavel_esgoto_outro_texto" name="responsavel_esgoto_outro_texto">
+          <p class="field__error" data-error-for="responsavel_esgoto_outro_texto"></p>
+        </div>
+
+        <h3 class="section-title">Licenças</h3>
+        <p class="section-desc">Para cada item, informe se possui e, se sim, a vigência.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="licenca_previa">Licença prévia</label>
+            <select id="licenca_previa" name="licenca_previa" required>
+              <option value="" disabled selected>Selecione</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+            <p class="field__error" data-error-for="licenca_previa"></p>
+          </div>
+          <div class="field" id="licenca_previa_vigencia-wrapper" hidden>
+            <label for="licenca_previa_vigencia">Vigência</label>
+            <input type="text" id="licenca_previa_vigencia" name="licenca_previa_vigencia">
+            <p class="field__error" data-error-for="licenca_previa_vigencia"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="licenca_instalacao">Licença de instalação</label>
+            <select id="licenca_instalacao" name="licenca_instalacao" required>
+              <option value="" disabled selected>Selecione</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+            <p class="field__error" data-error-for="licenca_instalacao"></p>
+          </div>
+          <div class="field" id="licenca_instalacao_vigencia-wrapper" hidden>
+            <label for="licenca_instalacao_vigencia">Vigência</label>
+            <input type="text" id="licenca_instalacao_vigencia" name="licenca_instalacao_vigencia">
+            <p class="field__error" data-error-for="licenca_instalacao_vigencia"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="licenca_operacao">Licença de operação</label>
+            <select id="licenca_operacao" name="licenca_operacao" required>
+              <option value="" disabled selected>Selecione</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+            <p class="field__error" data-error-for="licenca_operacao"></p>
+          </div>
+          <div class="field" id="licenca_operacao_vigencia-wrapper" hidden>
+            <label for="licenca_operacao_vigencia">Vigência</label>
+            <input type="text" id="licenca_operacao_vigencia" name="licenca_operacao_vigencia">
+            <p class="field__error" data-error-for="licenca_operacao_vigencia"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="licenciamento_bombeiros">Licenciamento Corpo de Bombeiros</label>
+            <select id="licenciamento_bombeiros" name="licenciamento_bombeiros" required>
+              <option value="" disabled selected>Selecione</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+            <p class="field__error" data-error-for="licenciamento_bombeiros"></p>
+          </div>
+          <div class="field" id="licenciamento_bombeiros_vigencia-wrapper" hidden>
+            <label for="licenciamento_bombeiros_vigencia">Vigência</label>
+            <input type="text" id="licenciamento_bombeiros_vigencia" name="licenciamento_bombeiros_vigencia">
+            <p class="field__error" data-error-for="licenciamento_bombeiros_vigencia"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="certidao_uso_solo">Certidão de uso do solo</label>
+            <select id="certidao_uso_solo" name="certidao_uso_solo" required>
+              <option value="" disabled selected>Selecione</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+            <p class="field__error" data-error-for="certidao_uso_solo"></p>
+          </div>
+          <div class="field" id="certidao_uso_solo_vigencia-wrapper" hidden>
+            <label for="certidao_uso_solo_vigencia">Vigência</label>
+            <input type="text" id="certidao_uso_solo_vigencia" name="certidao_uso_solo_vigencia">
+            <p class="field__error" data-error-for="certidao_uso_solo_vigencia"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="alvara_sanitario">Alvará Sanitário</label>
+            <select id="alvara_sanitario" name="alvara_sanitario" required>
+              <option value="" disabled selected>Selecione</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+            <p class="field__error" data-error-for="alvara_sanitario"></p>
+          </div>
+          <div class="field" id="alvara_sanitario_vigencia-wrapper" hidden>
+            <label for="alvara_sanitario_vigencia">Vigência</label>
+            <input type="text" id="alvara_sanitario_vigencia" name="alvara_sanitario_vigencia">
+            <p class="field__error" data-error-for="alvara_sanitario_vigencia"></p>
+          </div>
+        </div>
+
+        <h3 class="section-title">Responsável técnico</h3>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="responsavel_tecnico_nome">Nome completo</label>
+            <input type="text" id="responsavel_tecnico_nome" name="responsavel_tecnico_nome" required>
+            <p class="field__error" data-error-for="responsavel_tecnico_nome"></p>
+          </div>
+          <div class="field">
+            <label for="responsavel_tecnico_registro">Nº de registro no conselho regional</label>
+            <input type="text" id="responsavel_tecnico_registro" name="responsavel_tecnico_registro" required>
+            <p class="field__error" data-error-for="responsavel_tecnico_registro"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="g-recaptcha" data-sitekey="6LfDd70tAAAAAFjlhE_5tSCFK7dW7xkm99fV3-1u"></div>
+          <p class="field__error" data-error-for="recaptcha"></p>
+        </div>
+
+        <div class="card__footer">
+          <p class="card__footer-note">
+            Os dados são usados apenas para geração do documento e do protocolo deste processo.
+          </p>
+          <button type="submit" class="btn-primary" id="btn-submit">Gerar documento PDF</button>
+        </div>
+
+      </form>
+
+      <div class="feedback" id="feedback" role="status" aria-live="polite" hidden></div>
+
+    </main>
+
+  </div>
+
+  <script src="js/anexo-ix.js"></script>
+</body>
+</html>
