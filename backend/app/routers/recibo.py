@@ -38,11 +38,21 @@ def obter_recibo(processo_id: int, db: Session = Depends(get_db)):
 
     arquivos = [f for f in [processo.caminho_pdf_assinado] if f]
 
+    # Processos sem usuário vinculado (ex.: CFO, cujo modelo não pede CNPJ) usam
+    # o nome informado no próprio formulário e não exibem documento.
+    if processo.usuario is not None:
+        remetente_nome = processo.usuario.nome
+        remetente_documento = mascarar_documento(processo.usuario.cpf_cnpj)
+    else:
+        dados_formulario = processo.dados_formulario or {}
+        remetente_nome = dados_formulario.get("nome_empresarial") or dados_formulario.get("nome_empresa") or ""
+        remetente_documento = None
+
     return ReciboOut(
         protocolo=processo.protocolo,
         data_hora=processo.data_upload_assinado,
-        remetente_nome=processo.usuario.nome,
-        remetente_documento_mascarado=mascarar_documento(processo.usuario.cpf_cnpj),
+        remetente_nome=remetente_nome,
+        remetente_documento_mascarado=remetente_documento,
         declaracao=processo.texto_recibo,
         arquivos=arquivos,
     )

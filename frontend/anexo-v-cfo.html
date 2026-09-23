@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anexo V — Cronograma Físico da Obra — Sistema Cadastral CODEGO</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <div class="page">
+
+    <header class="letterhead">
+      <img class="letterhead__mark" src="assets/brasao_codego.png" alt="Brasão da Companhia de Desenvolvimento Econômico de Goiás">
+      <div class="letterhead__text">
+        <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
+        <h1 class="letterhead__title">Anexo V — Cronograma Físico da Obra (CFO)</h1>
+      </div>
+    </header>
+
+    <ol class="stepper" aria-label="Etapas do processo">
+      <li class="stepper__item stepper__item--current">
+        <span class="stepper__index">1</span>
+        <span class="stepper__label">Cadastro</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">2</span>
+        <span class="stepper__label">Assinatura</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">3</span>
+        <span class="stepper__label">Recibo</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">4</span>
+        <span class="stepper__label">Mensagens</span>
+      </li>
+    </ol>
+
+    <main class="card">
+      <div class="card__intro">
+        <h2 class="card__title">Cronograma Físico da Obra</h2>
+        <p class="card__desc">
+          Preencha os dados da obra e o percentual de cada serviço executado mês a mês para
+          gerar o cronograma em PDF no modelo oficial do Anexo V. Depois de gerado, baixe o
+          arquivo, assine digitalmente ou imprima e assine manualmente, e reenvie o documento
+          assinado na etapa seguinte.
+        </p>
+      </div>
+
+      <form id="form-anexo-v-cfo" novalidate>
+
+        <h3 class="section-title">Dados da empresa</h3>
+
+        <div class="field">
+          <label for="nome_empresa">Nome da empresa</label>
+          <input type="text" id="nome_empresa" name="nome_empresa" required>
+          <p class="field__error" data-error-for="nome_empresa"></p>
+        </div>
+
+        <div class="field">
+          <label for="cep_busca">CEP (opcional — ajuda a preencher o endereço abaixo)</label>
+          <input type="text" id="cep_busca" placeholder="00000-000" inputmode="numeric" maxlength="9">
+          <p class="field__hint" id="cep_busca-status"></p>
+        </div>
+
+        <div class="field">
+          <label for="endereco">Endereço</label>
+          <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro, cidade-UF" required>
+          <p class="field__error" data-error-for="endereco"></p>
+        </div>
+
+        <h3 class="section-title">Dados da obra</h3>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="area_empresa">Área da Empresa (m²)</label>
+            <input type="text" id="area_empresa" name="area_empresa" inputmode="decimal" placeholder="Ex.: 10.000" required>
+            <p class="field__error" data-error-for="area_empresa"></p>
+          </div>
+
+          <div class="field">
+            <label for="area_construida">Área a ser Construída (m²)</label>
+            <input type="text" id="area_construida" name="area_construida" inputmode="decimal" placeholder="Ex.: 2.500" required>
+            <p class="field__error" data-error-for="area_construida"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="inicio_obras">Previsão início das Obras</label>
+            <input type="month" id="inicio_obras" name="inicio_obras" required>
+            <p class="field__error" data-error-for="inicio_obras"></p>
+          </div>
+
+          <div class="field">
+            <label for="termino_obras">Previsão Término das Obras</label>
+            <input type="month" id="termino_obras" name="termino_obras" required>
+            <p class="field__error" data-error-for="termino_obras"></p>
+          </div>
+        </div>
+
+        <h3 class="section-title">Cronograma</h3>
+        <p class="section-desc">
+          Informe o percentual de cada serviço executado em cada mês. O total de cada serviço
+          deve fechar 100% (ex.: 50% + 50%, ou 25% em quatro meses). Deixe em branco os meses
+          sem execução.
+        </p>
+
+        <div class="cronograma" id="cronograma">
+          <p class="cronograma__vazio">Informe a previsão de início e de término das obras para montar o cronograma.</p>
+        </div>
+        <p class="field__error" data-error-for="servicos"></p>
+
+        <div class="field">
+          <button type="button" class="btn-secondary" id="btn-adicionar-servico">+ Adicionar serviço</button>
+        </div>
+
+        <div class="field">
+          <div class="g-recaptcha" data-sitekey="6LfDd70tAAAAAFjlhE_5tSCFK7dW7xkm99fV3-1u"></div>
+          <p class="field__error" data-error-for="recaptcha"></p>
+        </div>
+
+        <div class="card__footer">
+          <p class="card__footer-note">
+            Os dados são usados apenas para geração do documento e do protocolo deste processo.
+          </p>
+          <button type="submit" class="btn-primary" id="btn-submit">Gerar documento PDF</button>
+        </div>
+
+      </form>
+
+      <div class="feedback" id="feedback" role="status" aria-live="polite" hidden></div>
+
+    </main>
+
+  </div>
+
+  <script src="js/anexo-v-cfo.js"></script>
+</body>
+</html>

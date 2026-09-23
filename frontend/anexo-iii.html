@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anexo III — Solicitação de Área — Sistema Cadastral CODEGO</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <div class="page">
+
+    <header class="letterhead">
+      <img class="letterhead__mark" src="assets/brasao_codego.png" alt="Brasão da Companhia de Desenvolvimento Econômico de Goiás">
+      <div class="letterhead__text">
+        <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
+        <h1 class="letterhead__title">Anexo III — Solicitação de Área</h1>
+      </div>
+    </header>
+
+    <ol class="stepper" aria-label="Etapas do processo">
+      <li class="stepper__item stepper__item--current">
+        <span class="stepper__index">1</span>
+        <span class="stepper__label">Cadastro</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">2</span>
+        <span class="stepper__label">Assinatura</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">3</span>
+        <span class="stepper__label">Recibo</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">4</span>
+        <span class="stepper__label">Mensagens</span>
+      </li>
+    </ol>
+
+    <main class="card">
+      <div class="card__intro">
+        <h2 class="card__title">Solicitação de Área</h2>
+        <p class="card__desc">
+          Preencha todos os campos abaixo para gerar o documento em PDF no modelo oficial
+          do Anexo III. Depois de gerado, baixe o arquivo, assine digitalmente ou
+          imprima e assine manualmente, e reenvie o documento assinado na etapa seguinte.
+        </p>
+      </div>
+
+      <form id="form-anexo-iii" novalidate>
+
+        <h3 class="section-title">Área pretendida</h3>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="municipio_interesse">Município de interesse</label>
+            <input type="text" id="municipio_interesse" name="municipio_interesse" required>
+            <p class="field__error" data-error-for="municipio_interesse"></p>
+          </div>
+
+          <div class="field">
+            <label for="metragem_necessaria">Metragem necessária (m²)</label>
+            <input type="text" id="metragem_necessaria" name="metragem_necessaria" inputmode="decimal" placeholder="Ex.: 10.000" required>
+            <p class="field__error" data-error-for="metragem_necessaria"></p>
+          </div>
+        </div>
+
+        <h3 class="section-title">Dados cadastrais da empresa</h3>
+
+        <div class="field">
+          <label for="nome_empresarial">Nome empresarial</label>
+          <input type="text" id="nome_empresarial" name="nome_empresarial" required>
+          <p class="field__error" data-error-for="nome_empresarial"></p>
+        </div>
+
+        <div class="field">
+          <label for="cnpj">CNPJ</label>
+          <input type="text" id="cnpj" name="cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" required>
+          <p class="field__error" data-error-for="cnpj"></p>
+        </div>
+
+        <div class="field">
+          <label for="cep_busca">CEP (opcional — ajuda a preencher o endereço abaixo)</label>
+          <input type="text" id="cep_busca" placeholder="00000-000" inputmode="numeric" maxlength="9">
+          <p class="field__hint" id="cep_busca-status"></p>
+        </div>
+
+        <div class="field">
+          <label for="endereco_correspondencia_empresa">Endereço para correspondência</label>
+          <input type="text" id="endereco_correspondencia_empresa" name="endereco_correspondencia_empresa" placeholder="Rua, número, bairro, cidade-UF" required>
+          <p class="field__error" data-error-for="endereco_correspondencia_empresa"></p>
+        </div>
+
+        <h3 class="section-title">Dados cadastrais do representante</h3>
+
+        <div class="field">
+          <label for="representante_nome">Nome</label>
+          <input type="text" id="representante_nome" name="representante_nome" autocomplete="name" required>
+          <p class="field__error" data-error-for="representante_nome"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="representante_cpf">CPF</label>
+            <input type="text" id="representante_cpf" name="representante_cpf" inputmode="numeric" placeholder="000.000.000-00" required>
+            <p class="field__error" data-error-for="representante_cpf"></p>
+          </div>
+
+          <div class="field">
+            <label for="representante_rg">RG</label>
+            <input type="text" id="representante_rg" name="representante_rg" placeholder="0000000 SSP-UF" required>
+            <p class="field__error" data-error-for="representante_rg"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="representante_nome_mae">Nome da mãe</label>
+          <input type="text" id="representante_nome_mae" name="representante_nome_mae" required>
+          <p class="field__error" data-error-for="representante_nome_mae"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="email">Endereço eletrônico (e-mail)</label>
+            <input type="email" id="email" name="email" autocomplete="email" required>
+            <p class="field__error" data-error-for="email"></p>
+          </div>
+
+          <div class="field">
+            <label for="telefones">Telefones</label>
+            <input type="tel" id="telefones" name="telefones" placeholder="(00) 00000-0000 / (00) 0000-0000" required>
+            <p class="field__error" data-error-for="telefones"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="representante_cep_busca">CEP (opcional — ajuda a preencher o endereço abaixo)</label>
+          <input type="text" id="representante_cep_busca" placeholder="00000-000" inputmode="numeric" maxlength="9">
+          <p class="field__hint" id="representante_cep_busca-status"></p>
+        </div>
+
+        <div class="field">
+          <label for="representante_endereco_correspondencia">Endereço para correspondência</label>
+          <input type="text" id="representante_endereco_correspondencia" name="representante_endereco_correspondencia" placeholder="Rua, número, bairro, cidade-UF" required>
+          <p class="field__error" data-error-for="representante_endereco_correspondencia"></p>
+        </div>
+
+        <h3 class="section-title">Atividades (CNAE)</h3>
+        <p class="section-desc">Informe ao menos um CNAE (até quatro).</p>
+
+        <div class="cnae-list" id="cnaes-group">
+          <div class="cnae-row">
+            <span class="cnae-row__index">1.</span>
+            <input type="text" class="cnae-row__numero" data-cnae="numero" placeholder="Nº CNAE" aria-label="Nº CNAE 1">
+            <input type="text" class="cnae-row__descricao" data-cnae="descricao" placeholder="Descrição da atividade" aria-label="Descrição da atividade 1">
+          </div>
+          <div class="cnae-row">
+            <span class="cnae-row__index">2.</span>
+            <input type="text" class="cnae-row__numero" data-cnae="numero" placeholder="Nº CNAE" aria-label="Nº CNAE 2">
+            <input type="text" class="cnae-row__descricao" data-cnae="descricao" placeholder="Descrição da atividade" aria-label="Descrição da atividade 2">
+          </div>
+          <div class="cnae-row">
+            <span class="cnae-row__index">3.</span>
+            <input type="text" class="cnae-row__numero" data-cnae="numero" placeholder="Nº CNAE" aria-label="Nº CNAE 3">
+            <input type="text" class="cnae-row__descricao" data-cnae="descricao" placeholder="Descrição da atividade" aria-label="Descrição da atividade 3">
+          </div>
+          <div class="cnae-row">
+            <span class="cnae-row__index">4.</span>
+            <input type="text" class="cnae-row__numero" data-cnae="numero" placeholder="Nº CNAE" aria-label="Nº CNAE 4">
+            <input type="text" class="cnae-row__descricao" data-cnae="descricao" placeholder="Descrição da atividade" aria-label="Descrição da atividade 4">
+          </div>
+        </div>
+        <p class="field__error" data-error-for="cnaes"></p>
+
+        <h3 class="section-title">Documentação que acompanha o requerimento</h3>
+        <p class="section-desc">Marque os documentos que serão entregues junto com este requerimento.</p>
+
+        <div class="checkbox-group">
+          <label class="checkbox-item">
+            <input type="checkbox" name="documentos" value="certidao_simplificada">
+            <span>I - Certidão simplificada da empresa interessada, emitida pela Junta Comercial, em até 30 (trinta) dias</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="documentos" value="identidade_cpf_responsavel">
+            <span>II - Cópia do documento de identidade e CPF do responsável pela administração da sociedade</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="documentos" value="certidoes_negativas_fazenda">
+            <span>III - Certidão negativa de débitos junto à fazenda pública federal, estadual e municipal, emitida em até 30 (trinta) dias</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="documentos" value="procuracao">
+            <span>IV - Em caso do exercício de representação, procuração nos termos do art. 5º do presente regulamento</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="documentos" value="contrato_social">
+            <span>V - Cópia do contrato social</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="documentos" value="regularidade_fgts">
+            <span>VI - Certificado de regularidade do FGTS</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="documentos" value="certidao_trabalhista">
+            <span>VII - Certidão negativa de débitos trabalhistas</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="documentos" value="matricula_imovel">
+            <span>VIII - Certidão de inteiro teor da matrícula do imóvel (em caso de solicitação para área específica ou em demais casos em que a documentação elencada neste artigo for requerida)</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="documentos" value="evtf">
+            <span>IX - Estudo de Viabilidade Técnica e Financeira - EVTF (Anexo VI)</span>
+          </label>
+        </div>
+
+        <div class="field">
+          <div class="g-recaptcha" data-sitekey="6LfDd70tAAAAAFjlhE_5tSCFK7dW7xkm99fV3-1u"></div>
+          <p class="field__error" data-error-for="recaptcha"></p>
+        </div>
+
+        <div class="card__footer">
+          <p class="card__footer-note">
+            Os dados são usados apenas para geração do documento e do protocolo deste processo.
+          </p>
+          <button type="submit" class="btn-primary" id="btn-submit">Gerar documento PDF</button>
+        </div>
+
+      </form>
+
+      <div class="feedback" id="feedback" role="status" aria-live="polite" hidden></div>
+
+    </main>
+
+  </div>
+
+  <script src="js/anexo-iii.js"></script>
+</body>
+</html>

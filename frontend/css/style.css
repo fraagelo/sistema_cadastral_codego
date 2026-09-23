@@ -255,7 +255,9 @@ label {
 
 input[type="text"],
 input[type="email"],
-input[type="tel"] {
+input[type="tel"],
+input[type="number"],
+input[type="month"] {
   width: 100%;
   padding: 10px 12px;
   font-size: 14px;
@@ -761,4 +763,166 @@ input:focus-visible {
   .btn-primary {
     transition: none;
   }
+}
+
+/* Campos que aparecem/somem conforme uma resposta Sim/Não (MCE) */
+
+.field[hidden] {
+  display: none;
+}
+
+textarea.textarea--compact {
+  min-height: 84px;
+}
+
+.field--invalid select,
+.field--invalid textarea {
+  border-color: var(--danger);
+}
+
+/* Linhas de CNAE (Anexo III) */
+
+.cnae-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.cnae-row {
+  display: grid;
+  grid-template-columns: 22px 150px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.cnae-row__index {
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: right;
+}
+
+/* Cronograma Físico da Obra (Anexo V — CFO) */
+
+.cronograma {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+}
+
+.cronograma__vazio {
+  margin: 0;
+  padding: 18px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.cronograma table {
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 100%;
+}
+
+.cronograma th,
+.cronograma td {
+  border-bottom: 1px solid var(--border);
+  padding: 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.cronograma th {
+  font-weight: 600;
+  background: var(--paper);
+}
+
+.cronograma th small {
+  display: block;
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.cronograma th.cronograma__servico,
+.cronograma td.cronograma__servico {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  text-align: left;
+  background: var(--surface);
+  min-width: 190px;
+}
+
+.cronograma th.cronograma__servico {
+  background: var(--paper);
+}
+
+.cronograma input[type="text"],
+.cronograma input[type="number"] {
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+.cronograma input[type="number"] {
+  width: 64px;
+  text-align: right;
+}
+
+.cronograma__total {
+  font-weight: 600;
+  min-width: 64px;
+}
+
+.cronograma__total--ok {
+  color: var(--primary-dark);
+}
+
+.cronograma__total--erro {
+  color: var(--danger);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: var(--paper);
+}
+
+.btn-remover {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+@media (max-width: 600px) {
+  .cnae-row {
+    grid-template-columns: 22px 1fr;
+  }
+
+  .cnae-row__descricao {
+    grid-column: 2;
+  }
+}
+
+/* Subseções numeradas (MCE) */
+
+.subsection-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin: 22px 0 10px;
 }

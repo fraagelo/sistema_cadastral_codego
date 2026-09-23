@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page {
+      size: A4;
+      margin: 2cm 2cm 2.2cm;
+      @bottom-center {
+        content: counter(page) "/" counter(pages);
+        font-family: "Helvetica", "Arial", sans-serif;
+        font-size: 7.5pt;
+        color: #888;
+        margin-bottom: 0.5cm;
+      }
+    }
+    body {
+      font-family: "Helvetica", "Arial", sans-serif;
+      font-size: 10.5pt;
+      color: #1a1a1a;
+    }
+
+    /* Cabeçalho / timbre */
+    .timbre {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1.5pt solid #1f6d46;
+      padding-bottom: 10px;
+      margin-bottom: 18px;
+    }
+    .timbre img {
+      height: 40px;
+      width: auto;
+    }
+    .timbre__texto {
+      font-size: 8pt;
+      font-weight: bold;
+      color: #1f6d46;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .anexo-tag {
+      font-size: 9pt;
+      letter-spacing: 0.05em;
+      color: #1f6d46;
+      margin: 0 0 2px;
+    }
+    h1 {
+      font-size: 13pt;
+      text-transform: uppercase;
+      color: #123f28;
+      margin: 0 0 16px;
+    }
+
+    .titulo-formulario {
+      text-align: center;
+      font-weight: bold;
+      font-size: 10.5pt;
+      border: 1pt solid #333;
+      border-bottom: none;
+      padding: 6px;
+      margin: 0;
+    }
+    table.dados {
+      margin-top: 0;
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      margin-bottom: 22px;
+    }
+    table.dados td {
+      border: 1pt solid #333;
+      padding: 5px 8px;
+      vertical-align: top;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    table.dados td.rotulo {
+      width: 28%;
+      font-weight: bold;
+      background: #f2f2f2;
+    }
+
+    .data-cidade {
+      text-align: right;
+      margin-bottom: 18px;
+    }
+    .corpo {
+      text-align: justify;
+      line-height: 1.55;
+    }
+
+    .assinatura {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .assinatura .linha {
+      border-top: 1pt solid #333;
+      width: 65%;
+      margin: 0 auto 4px;
+    }
+    .assinatura p {
+      margin: 2px 0;
+    }
+
+    .protocolo {
+      position: fixed;
+      bottom: -1.3cm;
+      right: 2cm;
+      font-size: 7.5pt;
+      color: #888;
+    }
+
+    table.dados th {
+      border: 1pt solid #333;
+      padding: 5px 8px;
+      text-align: center;
+      font-weight: bold;
+      background: #f2f2f2;
+    }
+    table.dados td.centro {
+      text-align: center;
+    }
+    table.dados .numero {
+      width: 18%;
+    }
+    table.dados .check {
+      width: 14%;
+      text-align: center;
+      font-weight: bold;
+      vertical-align: middle;
+    }
+    table.dados tr {
+      page-break-inside: avoid;
+    }
+    table.checklist {
+      page-break-before: always;
+    }
+    .observacao {
+      font-size: 9.5pt;
+      text-align: justify;
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="timbre">
+    <img src="{{ brasao_data_uri }}" alt="Brasão CODEGO">
+    <div class="timbre__texto">
+      Companhia de Desenvolvimento<br>
+      Econômico de Goiás
+    </div>
+  </div>
+
+  <p class="anexo-tag">ANEXO III</p>
+  <h1>Solicitação de Área</h1>
+
+  <table class="dados">
+    <tr>
+      <th>Município de interesse</th>
+      <th>Metragem necessária (m²)</th>
+    </tr>
+    <tr>
+      <td class="centro">{{ municipio_interesse }}</td>
+      <td class="centro">{{ metragem_necessaria }}</td>
+    </tr>
+  </table>
+
+  <p class="titulo-formulario">Dados cadastrais da empresa</p>
+  <table class="dados">
+    <tr>
+      <td class="rotulo">Nome empresarial</td>
+      <td>{{ nome_empresarial }}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">CNPJ</td>
+      <td>{{ cnpj }}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">Endereço para correspondência</td>
+      <td>{{ endereco_correspondencia_empresa }}</td>
+    </tr>
+  </table>
+
+  <p class="titulo-formulario">Dados cadastrais do representante da empresa</p>
+  <table class="dados">
+    <tr>
+      <td class="rotulo">Nome</td>
+      <td>{{ representante_nome }}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">CPF</td>
+      <td>{{ representante_cpf }}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">RG</td>
+      <td>{{ representante_rg }}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">Nome da mãe</td>
+      <td>{{ representante_nome_mae }}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">CNPJ</td>
+      <td>{{ cnpj }}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">Endereço eletrônico (e-mail)</td>
+      <td>{{ email }}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">Telefones</td>
+      <td>{{ telefones }}</td>
+    </tr>
+    <tr>
+      <td class="rotulo">Endereço para correspondência</td>
+      <td>{{ representante_endereco_correspondencia }}</td>
+    </tr>
+  </table>
+
+  <table class="dados">
+    <tr>
+      <th class="numero">Nº CNAE</th>
+      <th>Descrição da Atividade</th>
+    </tr>
+    {% for cnae in cnaes %}
+    <tr>
+      <td class="numero">{{ loop.index }}. {{ cnae.numero }}</td>
+      <td>{{ cnae.descricao }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <p class="corpo">
+    Havendo disponibilidade de imóvel, a solicitante declara ter ciência dos termos e
+    prazos estabelecidos no Regulamento para Alienações de Áreas da CODEGO,
+    requerendo, desde já, a formalização do processo administrativo para aquisição
+    de área e a concessão de apoio locacional, indicado no art. 3º, inciso I da lei
+    nº 13.064 de 14/10/2015.
+  </p>
+
+  <table class="dados checklist">
+    <tr>
+      <th>Documentação que acompanha o requerimento:</th>
+      <th class="check">Check list</th>
+    </tr>
+    {% for documento in documentos %}
+    <tr>
+      <td>{{ documento.texto }}</td>
+      <td class="check">{% if documento.marcado %}X{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <p class="observacao">
+    Observação: No caso de empresas em funcionamento em outros Estados que queiram
+    transferir suas atividades ou iniciar as atividades de filial no Estado de Goiás,
+    deverão ser apresentadas certidões referentes ao Estado e Município em que estejam
+    instaladas (ou, no caso de filial, onde estejam instaladas a matriz) e referentes
+    ao Estado de Goiás.
+  </p>
+
+  <p class="data-cidade">{{ cidade_data }}</p>
+
+  <p class="corpo">Atenciosamente,</p>
+
+  <div class="assinatura">
+    <div class="linha"></div>
+    <p>{{ representante_nome }}</p>
+    <p>CPF {{ representante_cpf }}</p>
+  </div>
+
+  <div class="protocolo">Protocolo interno: {{ protocolo }}</div>
+
+</body>
+</html>
