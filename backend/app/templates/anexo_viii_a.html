@@ -4,8 +4,13 @@
   <meta charset="UTF-8">
   <style>
     @page {
-      size: A4;
+      size: A4 landscape;
       margin: 2cm 2cm 2.2cm;
+      @bottom-right {
+        content: "Protocolo interno: {{ protocolo }}";
+        font-size: 7.5pt;
+        color: #888;
+      }
     }
     body {
       font-family: "Helvetica", "Arial", sans-serif;
@@ -19,18 +24,18 @@
       align-items: center;
       gap: 10px;
       border-bottom: 1.5pt solid #1f6d46;
-      padding-bottom: 10px;
-      margin-bottom: 18px;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
     }
     .timbre img {
-      height: 40px;
+      height: 36px;
       width: auto;
     }
     .timbre__texto {
       font-size: 8pt;
       font-weight: bold;
       color: #1f6d46;
-      line-height: 1.25;
+      line-height: 1.2;
       text-transform: uppercase;
     }
 
@@ -41,10 +46,10 @@
       margin: 0 0 2px;
     }
     h1 {
-      font-size: 13pt;
+      font-size: 12.5pt;
       text-transform: uppercase;
       color: #123f28;
-      margin: 0 0 16px;
+      margin: 0 0 10px;
     }
 
     .titulo-formulario {
@@ -53,7 +58,7 @@
       font-size: 10.5pt;
       border: 1pt solid #333;
       border-bottom: none;
-      padding: 6px;
+      padding: 5px;
       margin: 0;
     }
     table.dados {
@@ -61,11 +66,11 @@
       width: 100%;
       table-layout: fixed;
       border-collapse: collapse;
-      margin-bottom: 22px;
+      margin-bottom: 12px;
     }
     table.dados td {
       border: 1pt solid #333;
-      padding: 5px 8px;
+      padding: 2px 8px;
       vertical-align: top;
       word-break: break-word;
       overflow-wrap: break-word;
@@ -78,15 +83,16 @@
 
     .data-cidade {
       text-align: right;
-      margin-bottom: 18px;
+      margin: 0 0 10px;
     }
     .corpo {
       text-align: justify;
-      line-height: 1.55;
+      line-height: 1.25;
+      margin: 0 0 7px;
     }
 
     .assinatura {
-      margin-top: 40px;
+      margin-top: 12px;
       text-align: center;
     }
     .assinatura .linha {
@@ -96,14 +102,6 @@
     }
     .assinatura p {
       margin: 2px 0;
-    }
-
-    .protocolo {
-      position: fixed;
-      bottom: 0.8cm;
-      right: 2cm;
-      font-size: 7.5pt;
-      color: #888;
     }
   </style>
 </head>
@@ -185,8 +183,6 @@
     <p>Assinatura do(a) representante legal da empresa</p>
     <p>{{ nome_empresarial }} (com carimbo CNPJ)</p>
   </div>
-
-  <div class="protocolo">Protocolo interno: {{ protocolo }}</div>
 
 </body>
 </html>
