@@ -33,6 +33,7 @@ class TipoDocumento(str, enum.Enum):
     ANEXO_VIII_B = "anexo_viii_b"
     ANEXO_VIII_C = "anexo_viii_c"
     ANEXO_IX = "anexo_ix"
+    ANEXO_VI_EVTF = "anexo_vi_evtf"
 
 
 class Usuario(Base):
