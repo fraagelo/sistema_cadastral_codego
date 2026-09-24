@@ -2,6 +2,8 @@ import re
 
 from pydantic import BaseModel, field_validator, model_validator
 
+from app.schemas.validacoes import formatar_numero_br, mes_atual, numero_br
+
 # Serviços que já aparecem no modelo do cronograma. O front-end usa essa lista
 # como sugestão inicial; o usuário pode remover/adicionar serviços livremente.
 SERVICOS_SUGERIDOS_CFO = [
@@ -75,6 +77,24 @@ class AnexoVCfoCreate(BaseModel):
             raise ValueError(f"O campo '{info.field_name}' é obrigatório.")
         return v.strip()
 
+    @field_validator("area_empresa", "area_construida")
+    @classmethod
+    def valida_area(cls, v: str, info):
+        rotulo = "Área da Empresa" if info.field_name == "area_empresa" else "Área a ser Construída"
+        try:
+            valor = numero_br(v)
+        except ValueError as exc:
+            raise ValueError(f"{rotulo}: {exc}") from exc
+        if valor <= 0:
+            raise ValueError(f"{rotulo} deve ser maior que zero.")
+        return formatar_numero_br(valor)
+
+    @model_validator(mode="after")
+    def valida_areas_coerentes(self):
+        if numero_br(self.area_construida) > numero_br(self.area_empresa):
+            raise ValueError("A área a ser construída não pode ser maior que a área da empresa.")
+        return self
+
     @field_validator("inicio_obras", "termino_obras")
     @classmethod
     def valida_mes_ano(cls, v: str, info):
@@ -93,6 +113,8 @@ class AnexoVCfoCreate(BaseModel):
 
     @model_validator(mode="after")
     def valida_cronograma(self):
+        if self.inicio_obras < mes_atual():
+            raise ValueError("A previsão de início das obras não pode ser um mês que já passou.")
         meses = total_meses(self.inicio_obras, self.termino_obras)
         if meses < 1:
             raise ValueError("A previsão de término das obras deve ser igual ou posterior ao início.")

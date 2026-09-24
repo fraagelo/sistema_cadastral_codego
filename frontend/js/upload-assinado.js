@@ -84,7 +84,10 @@ async function resolverProtocolo() {
     const response = await fetch(`${API_BASE_URL}/api/cadastro/${processo.id}`);
     const processoDetalhado = await response.json();
     const dados = processoDetalhado.dados_formulario || {};
-    mostrarProcessoInfo(processo, dados.nome_empresarial || dados.nome_empresa || `Processo #${processo.id}`);
+    mostrarProcessoInfo(
+      processo,
+      dados.nome_empresarial || dados.nome_empresa || dados.razao_social || `Processo #${processo.id}`
+    );
   } catch (error) {
     mostrarProcessoInfo(processo, `Processo #${processo.id}`);
   }

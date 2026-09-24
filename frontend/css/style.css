@@ -257,7 +257,8 @@ input[type="text"],
 input[type="email"],
 input[type="tel"],
 input[type="number"],
-input[type="month"] {
+input[type="month"],
+input[type="date"] {
   width: 100%;
   padding: 10px 12px;
   font-size: 14px;

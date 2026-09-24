@@ -146,34 +146,28 @@
 
         <h4 class="subsection-title">1.3. Situação do Empreendimento</h4>
         <div class="field">
-          <label for="em_implantacao">Empreendimento em Implantação</label>
-          <select id="em_implantacao" name="em_implantacao" data-tipo="simnao" required>
+          <label for="situacao_implantacao">Situação do empreendimento</label>
+          <select id="situacao_implantacao" required>
             <option value="" disabled selected>Selecione</option>
-            <option value="Sim">Sim</option>
-            <option value="Não">Não</option>
+            <option value="em_implantacao">Em implantação</option>
+            <option value="ja_implantado">Já implantado</option>
           </select>
-          <p class="field__error" data-error-for="em_implantacao"></p>
+          <p class="field__error" data-error-for="situacao_implantacao"></p>
+          <!-- O modelo tem as duas perguntas (Em Implantação / Já Implantado);
+               a escolha acima preenche as duas de forma coerente. -->
+          <input type="hidden" id="em_implantacao" name="em_implantacao" value="">
+          <input type="hidden" id="ja_implantado" name="ja_implantado" value="">
         </div>
 
         <div class="field" data-mostrar-se="em_implantacao" hidden>
           <label for="previsao_funcionamento">Previsão para entrar em Funcionamento</label>
-          <input type="text" id="previsao_funcionamento" name="previsao_funcionamento" placeholder="Ex.: março/2027">
+          <input type="month" id="previsao_funcionamento" name="previsao_funcionamento">
           <p class="field__error" data-error-for="previsao_funcionamento"></p>
-        </div>
-
-        <div class="field">
-          <label for="ja_implantado">Empreendimento Já Implantado</label>
-          <select id="ja_implantado" name="ja_implantado" data-tipo="simnao" required>
-            <option value="" disabled selected>Selecione</option>
-            <option value="Sim">Sim</option>
-            <option value="Não">Não</option>
-          </select>
-          <p class="field__error" data-error-for="ja_implantado"></p>
         </div>
 
         <div class="field" data-mostrar-se="ja_implantado" hidden>
           <label for="data_inicio_operacoes">Data de Início das Operações</label>
-          <input type="text" id="data_inicio_operacoes" name="data_inicio_operacoes" placeholder="Ex.: 15/01/2020">
+          <input type="date" id="data_inicio_operacoes" name="data_inicio_operacoes">
           <p class="field__error" data-error-for="data_inicio_operacoes"></p>
         </div>
 
@@ -187,13 +181,13 @@
         <div class="field-row">
           <div class="field">
             <label for="area_total_terreno">Área Total do Terreno (m²)</label>
-            <input type="text" id="area_total_terreno" name="area_total_terreno">
+            <input type="text" id="area_total_terreno" name="area_total_terreno" data-tipo="area" inputmode="decimal" placeholder="Ex.: 12.500">
             <p class="field__error" data-error-for="area_total_terreno"></p>
           </div>
 
           <div class="field">
             <label for="area_construida">Área Construída (m²)</label>
-            <input type="text" id="area_construida" name="area_construida">
+            <input type="text" id="area_construida" name="area_construida" data-tipo="area" inputmode="decimal" placeholder="Ex.: 4.800">
             <p class="field__error" data-error-for="area_construida"></p>
           </div>
         </div>
@@ -201,14 +195,14 @@
         <div class="field-row">
           <div class="field">
             <label for="area_verde">Área Verde (m²)</label>
-            <input type="text" id="area_verde" name="area_verde">
+            <input type="text" id="area_verde" name="area_verde" data-tipo="area" inputmode="decimal" placeholder="Ex.: 2.700">
             <p class="field__error" data-error-for="area_verde"></p>
           </div>
 
           <div class="field">
             <label for="percentual_area_verde">Percentual de Área Verde</label>
-            <input type="text" id="percentual_area_verde" name="percentual_area_verde" placeholder="Mínimo de 20%">
-            <p class="field__error" data-error-for="percentual_area_verde"></p>
+            <input type="text" id="percentual_area_verde" value="" placeholder="Calculado automaticamente" readonly aria-readonly="true">
+            <p class="field__hint" id="percentual_area_verde-aviso">Mínimo de 20% da área total.</p>
           </div>
         </div>
 
@@ -241,13 +235,13 @@
         <div class="field-row">
           <div class="field">
             <label for="mao_obra_escritorio">Escritório</label>
-            <input type="number" id="mao_obra_escritorio" name="mao_obra_escritorio" data-tipo="int" min="0" step="1" inputmode="numeric" placeholder="0">
+            <input type="text" id="mao_obra_escritorio" name="mao_obra_escritorio" data-tipo="int" inputmode="numeric" maxlength="6" placeholder="0">
             <p class="field__error" data-error-for="mao_obra_escritorio"></p>
           </div>
 
           <div class="field">
             <label for="mao_obra_industria">Indústria</label>
-            <input type="number" id="mao_obra_industria" name="mao_obra_industria" data-tipo="int" min="0" step="1" inputmode="numeric" placeholder="0">
+            <input type="text" id="mao_obra_industria" name="mao_obra_industria" data-tipo="int" inputmode="numeric" maxlength="6" placeholder="0">
             <p class="field__error" data-error-for="mao_obra_industria"></p>
           </div>
         </div>
@@ -255,13 +249,13 @@
         <div class="field-row">
           <div class="field">
             <label for="mao_obra_externos">Externos</label>
-            <input type="number" id="mao_obra_externos" name="mao_obra_externos" data-tipo="int" min="0" step="1" inputmode="numeric" placeholder="0">
+            <input type="text" id="mao_obra_externos" name="mao_obra_externos" data-tipo="int" inputmode="numeric" maxlength="6" placeholder="0">
             <p class="field__error" data-error-for="mao_obra_externos"></p>
           </div>
 
           <div class="field">
             <label for="mao_obra_outros">Outros</label>
-            <input type="number" id="mao_obra_outros" name="mao_obra_outros" data-tipo="int" min="0" step="1" inputmode="numeric" placeholder="0">
+            <input type="text" id="mao_obra_outros" name="mao_obra_outros" data-tipo="int" inputmode="numeric" maxlength="6" placeholder="0">
             <p class="field__error" data-error-for="mao_obra_outros"></p>
           </div>
         </div>
@@ -686,7 +680,7 @@
 
         <div class="field" data-mostrar-se="pca" hidden>
           <label for="pca_data_revisao">Data da Última Revisão</label>
-          <input type="text" id="pca_data_revisao" name="pca_data_revisao" placeholder="Ex.: 10/05/2025">
+          <input type="date" id="pca_data_revisao" name="pca_data_revisao">
           <p class="field__error" data-error-for="pca_data_revisao"></p>
         </div>
 
