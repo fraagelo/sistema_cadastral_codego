@@ -8,6 +8,13 @@ function onlyDigits(value) {
   return value.replace(/\D/g, '');
 }
 
+// Número no formato brasileiro ("12.500", "2.500,75", "12500 m²") -> número, ou NaN.
+function numeroBr(value) {
+  const texto = value.trim().replace(/\s*m\s*[²2]\s*$/i, '');
+  if (!/^(\d{1,3}(\.\d{3})*(,\d+)?|\d+(,\d+)?)$/.test(texto)) return NaN;
+  return Number(texto.replace(/\./g, '').replace(',', '.'));
+}
+
 function maskCnpj(digits) {
   return digits
     .slice(0, 14)
@@ -111,6 +118,7 @@ const MAX_MESES = 60;
 const MESES_ABREV = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
 
 const cronogramaEl = document.getElementById('cronograma');
+const adicionarServicoWrapper = document.getElementById('adicionar-servico-wrapper');
 const inicioInput = document.getElementById('inicio_obras');
 const terminoInput = document.getElementById('termino_obras');
 
@@ -125,6 +133,52 @@ function totalMeses() {
   const meses = (anoT - anoI) * 12 + (mesT - mesI) + 1;
   return meses >= 1 && meses <= MAX_MESES ? meses : 0;
 }
+
+// Mensagem de erro do período informado, ou '' se estiver coerente (ou incompleto).
+const hoje = new Date();
+const MES_ATUAL = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+inicioInput.min = MES_ATUAL;
+
+function problemaInicio() {
+  return inicioInput.value && inicioInput.value < MES_ATUAL
+    ? 'A previsão de início das obras não pode ser um mês que já passou.'
+    : '';
+}
+
+function problemaPeriodo() {
+  const inicio = inicioInput.value;
+  const termino = terminoInput.value;
+  if (!inicio || !termino) return '';
+  if (termino < inicio) {
+    return 'A previsão de término deve ser igual ou posterior à previsão de início.';
+  }
+  if (totalMeses() === 0) {
+    return `O cronograma pode ter no máximo ${MAX_MESES} meses (5 anos).`;
+  }
+  return '';
+}
+
+// Valida o período assim que uma das datas muda, e limita o calendário para
+// não permitir escolher um término antes do início (e vice-versa).
+// Datas que não fazem sentido (início no passado, término antes do início,
+// mais de 5 anos) não são aceitas: o campo volta ao valor anterior.
+let inicioAnterior = '';
+let terminoAnterior = '';
+function atualizarPeriodo() {
+  inicioAnterior = inicioInput.value;
+  terminoAnterior = terminoInput.value;
+  terminoInput.min = inicioInput.value || MES_ATUAL;
+  inicioInput.max = terminoInput.value || '';
+  renderCronograma();
+}
+inicioInput.addEventListener('change', () => {
+  if (problemaInicio() || problemaPeriodo()) inicioInput.value = inicioAnterior;
+  atualizarPeriodo();
+});
+terminoInput.addEventListener('change', () => {
+  if (problemaPeriodo()) terminoInput.value = terminoAnterior;
+  atualizarPeriodo();
+});
 
 function referenciaMes(indice) {
   const [ano, mes] = inicioInput.value.split('-').map(Number);
@@ -142,7 +196,8 @@ function atualizarTotal(indiceServico) {
   if (!celula) return;
   const soma = somaPercentuais(servicos[indiceServico]);
   celula.textContent = `${Number(soma.toFixed(2)).toLocaleString('pt-BR')}%`;
-  celula.className = `cronograma__total ${Math.abs(soma - 100) <= 0.01 ? 'cronograma__total--ok' : 'cronograma__total--erro'}`;
+  // Verde quando fecha 100%; enquanto isso fica neutro (só é erro se tentar gerar assim).
+  celula.className = `cronograma__total${Math.abs(soma - 100) <= 0.01 ? ' cronograma__total--ok' : ''}`;
 }
 
 function escapeHtml(texto) {
@@ -157,8 +212,13 @@ function renderCronograma() {
     servico.percentuais = Array.from({ length: meses }, (_, i) => servico.percentuais[i] ?? '');
   });
 
+  // O botão de adicionar serviço só faz sentido com a tabela montada.
+  adicionarServicoWrapper.hidden = meses === 0;
+
   if (meses === 0) {
-    cronogramaEl.innerHTML = '<p class="cronograma__vazio">Informe a previsão de início e de término das obras para montar o cronograma.</p>';
+    cronogramaEl.innerHTML = problemaPeriodo()
+      ? '<p class="cronograma__vazio">Corrija a previsão de início e de término das obras para montar o cronograma.</p>'
+      : '<p class="cronograma__vazio">Informe a previsão de início e de término das obras para montar o cronograma.</p>';
     return;
   }
 
@@ -205,10 +265,29 @@ cronogramaEl.addEventListener('input', (e) => {
   if (descricao !== undefined) {
     servicos[Number(descricao)].descricao = e.target.value;
   } else if (servico !== undefined) {
-    servicos[Number(servico)].percentuais[Number(mes)] = e.target.value;
+    const linha = servicos[Number(servico)];
+    const anterior = linha.percentuais[Number(mes)];
+    // Texto que não é número (ex.: "9-" colado) também não é aceito.
+    if (e.target.validity.badInput) {
+      e.target.value = anterior;
+      return;
+    }
+    const novo = Number(e.target.value) || 0;
+    const somaSemEste = somaPercentuais(linha) - (Number(anterior) || 0);
+    // Não aceita valor negativo, acima de 100% ou que faça o serviço passar de 100%.
+    if (novo < 0 || novo > 100 || somaSemEste + novo > 100.001) {
+      e.target.value = anterior;
+      return;
+    }
+    linha.percentuais[Number(mes)] = e.target.value;
     atualizarTotal(Number(servico));
   }
   clearError('servicos');
+});
+
+// Nos percentuais, as teclas de sinal e de expoente não entram.
+cronogramaEl.addEventListener('keydown', (e) => {
+  if (e.target.dataset.servico !== undefined && ['e', 'E', '+', '-'].includes(e.key)) e.preventDefault();
 });
 
 cronogramaEl.addEventListener('click', (e) => {
@@ -225,8 +304,6 @@ document.getElementById('btn-adicionar-servico').addEventListener('click', () =>
   novos[novos.length - 1]?.focus();
 });
 
-inicioInput.addEventListener('change', renderCronograma);
-terminoInput.addEventListener('change', renderCronograma);
 
 function setError(fieldName, message) {
   const errorEl = document.querySelector(`[data-error-for="${fieldName}"]`);
@@ -242,6 +319,51 @@ function clearError(fieldName) {
   const field = document.getElementById(fieldName);
   if (field) field.closest('.field')?.classList.remove('field--invalid');
   errorEl.textContent = '';
+}
+
+// ---------------------------------------------------------------------------
+// Restrições de digitação: o campo não aceita o que não pode (letra em campo
+// de número, valor acima do limite etc.). O que não dá para barrar enquanto a
+// pessoa digita (campo vazio ou incompleto) é avisado ao clicar em "Gerar
+// documento PDF", rolando a página até o campo.
+// ---------------------------------------------------------------------------
+
+// Aplica "formatar" a cada alteração e só aceita o novo valor se "permitido"
+// concordar; senão o campo volta ao valor anterior.
+function restringirCampo(el, formatar, permitido = () => true) {
+  if (!el) return;
+  let anterior = el.value;
+  el.addEventListener('focus', () => { anterior = el.value; });
+  el.addEventListener('input', () => {
+    const novo = formatar ? formatar(el.value) : el.value;
+    if (!permitido(novo)) {
+      el.value = anterior;
+      return;
+    }
+    el.value = novo;
+    anterior = novo;
+  });
+}
+
+// Rola até o primeiro campo com erro e coloca o cursor nele.
+function irParaPrimeiroErro() {
+  const erro = document.querySelector('.field__error:not(:empty)');
+  if (!erro) return;
+  const campo = document.getElementById(erro.dataset.errorFor);
+  (campo || erro).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (campo && typeof campo.focus === 'function') campo.focus({ preventScroll: true });
+}
+
+// Quando a pessoa começa a corrigir um campo, o aviso dele some.
+form.addEventListener('input', (e) => { if (e.target.id) clearError(e.target.id); });
+form.addEventListener('change', (e) => { if (e.target.id) clearError(e.target.id); });
+
+// Número no formato brasileiro, formatado enquanto digita: "12500" -> "12.500",
+// com vírgula para decimais (até 2 casas).
+function formatarNumeroBr(v) {
+  const [inteiro, ...decimais] = v.replace(/[^\d,]/g, '').split(',');
+  const milhares = inteiro.replace(/^0+(?=\d)/, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return decimais.length ? `${milhares},${decimais.join('').slice(0, 2)}` : milhares;
 }
 
 function validateEmail(value) {
@@ -273,17 +395,17 @@ function validateForm() {
   if (!inicio) {
     setError('inicio_obras', 'Informe a previsão de início das obras.');
     valid = false;
+  } else if (problemaInicio()) {
+    setError('inicio_obras', problemaInicio());
+    valid = false;
   } else {
     clearError('inicio_obras');
   }
   if (!termino) {
     setError('termino_obras', 'Informe a previsão de término das obras.');
     valid = false;
-  } else if (inicio && termino < inicio) {
-    setError('termino_obras', 'O término deve ser igual ou posterior ao início.');
-    valid = false;
-  } else if (inicio && totalMeses() === 0) {
-    setError('termino_obras', `O cronograma pode ter no máximo ${MAX_MESES} meses.`);
+  } else if (problemaPeriodo()) {
+    setError('termino_obras', problemaPeriodo());
     valid = false;
   } else {
     clearError('termino_obras');
@@ -304,6 +426,24 @@ function validateForm() {
     } else {
       clearError('servicos');
     }
+  }
+
+  // Áreas: só números, maiores que zero; a construída cabe na área da empresa.
+  const areaEmpresa = numeroBr(document.getElementById('area_empresa').value);
+  const areaConstruida = numeroBr(document.getElementById('area_construida').value);
+  [['area_empresa', areaEmpresa], ['area_construida', areaConstruida]].forEach(([id, valor]) => {
+    if (!document.getElementById(id).value.trim()) return;
+    if (Number.isNaN(valor)) {
+      setError(id, 'Informe apenas números (ex.: 12.500 ou 2.500,50).');
+      valid = false;
+    } else if (valor <= 0) {
+      setError(id, 'A área deve ser maior que zero.');
+      valid = false;
+    }
+  });
+  if (areaConstruida > areaEmpresa) {
+    setError('area_construida', 'A área a ser construída não pode ser maior que a área da empresa.');
+    valid = false;
   }
 
   if (typeof grecaptcha !== 'undefined' && !grecaptcha.getResponse()) {
@@ -347,6 +487,7 @@ form.addEventListener('submit', async (event) => {
   hideFeedback();
 
   if (!validateForm()) {
+    irParaPrimeiroErro();
     return;
   }
 
@@ -399,7 +540,7 @@ form.addEventListener('submit', async (event) => {
 
     form.reset();
     servicos = SERVICOS_SUGERIDOS.map((descricao) => ({ descricao, percentuais: [] }));
-    renderCronograma();
+    atualizarPeriodo();
   } catch (error) {
     showFeedback(
       `<p class="feedback__title">Falha de conexão</p><p>Não foi possível falar com o servidor. Verifique se a API está em execução e tente novamente.</p>`,
@@ -411,4 +552,12 @@ form.addEventListener('submit', async (event) => {
       grecaptcha.reset();
     }
   }
+});
+
+// Restrições deste formulário
+restringirCampo(document.getElementById('area_empresa'), formatarNumeroBr);
+restringirCampo(document.getElementById('area_construida'), formatarNumeroBr, (v) => {
+  // não pode passar da área de referência (quando ela já estiver preenchida)
+  const limite = numeroBr(document.getElementById('area_empresa').value);
+  return !v || Number.isNaN(limite) || numeroBr(v) <= limite;
 });

@@ -1,6 +1,9 @@
+import re
+from datetime import date
 from typing import Literal
 
 from pydantic import BaseModel, EmailStr, field_validator, model_validator
+from app.schemas.validacoes import cnpj_valido, formatar_numero_br, mes_atual, numero_br, telefone_valido
 
 SimNao = Literal["Sim", "Não"]
 
@@ -308,6 +311,8 @@ class AnexoViiMceCreate(BaseModel):
     area_total_terreno: str
     area_construida: str = ""
     area_verde: str = ""
+    # Calculado a partir da área verde e da área total (o que vier do front-end
+    # é ignorado).
     percentual_area_verde: str = ""
     uso_solo: str = ""
     topografia: str = ""
@@ -453,6 +458,8 @@ class AnexoViiMceCreate(BaseModel):
         digits = "".join(filter(str.isdigit, v))
         if len(digits) != 14:
             raise ValueError("CNPJ deve ter 14 dígitos.")
+        if not cnpj_valido(digits):
+            raise ValueError("CNPJ inválido. Confira os números digitados.")
         return digits
 
     @field_validator("cep")
@@ -467,8 +474,8 @@ class AnexoViiMceCreate(BaseModel):
     @classmethod
     def valida_telefone(cls, v: str):
         digits = "".join(filter(str.isdigit, v))
-        if len(digits) < 10:
-            raise ValueError("Telefone deve ter DDD + número (mínimo 10 dígitos).")
+        if not telefone_valido(digits):
+            raise ValueError("Telefone deve ter DDD + número: 10 dígitos (fixo) ou 11 (celular).")
         return digits
 
     @field_validator("mao_obra_escritorio", "mao_obra_industria", "mao_obra_externos", "mao_obra_outros")
@@ -477,6 +484,78 @@ class AnexoViiMceCreate(BaseModel):
         if v < 0:
             raise ValueError("A quantidade de funcionários não pode ser negativa.")
         return v
+
+    @field_validator("area_total_terreno", "area_construida", "area_verde")
+    @classmethod
+    def valida_area(cls, v: str, info):
+        rotulos = {
+            "area_total_terreno": "Área Total do Terreno",
+            "area_construida": "Área Construída",
+            "area_verde": "Área Verde",
+        }
+        if not (v or "").strip():
+            return ""
+        try:
+            valor = numero_br(v)
+        except ValueError as exc:
+            raise ValueError(f"{rotulos[info.field_name]}: {exc}") from exc
+        if valor <= 0 and info.field_name == "area_total_terreno":
+            raise ValueError("A Área Total do Terreno deve ser maior que zero.")
+        return formatar_numero_br(valor)
+
+    @field_validator("previsao_funcionamento")
+    @classmethod
+    def valida_previsao_funcionamento(cls, v: str):
+        if not (v or "").strip():
+            return ""
+        if not re.fullmatch(r"\d{4}-\d{2}", v) or not 1 <= int(v[5:]) <= 12:
+            raise ValueError("Previsão para entrar em Funcionamento: use o formato AAAA-MM.")
+        if v < mes_atual():
+            raise ValueError("A previsão para entrar em funcionamento não pode ser um mês que já passou.")
+        return v
+
+    @field_validator("data_inicio_operacoes", "pca_data_revisao")
+    @classmethod
+    def valida_data_passada(cls, v: str, info):
+        rotulo = "Data de Início das Operações" if info.field_name == "data_inicio_operacoes" else "Data da Última Revisão do PCA"
+        if not (v or "").strip():
+            return ""
+        try:
+            data = date.fromisoformat(v)
+        except ValueError as exc:
+            raise ValueError(f"{rotulo}: use o formato AAAA-MM-DD.") from exc
+        if data > date.today():
+            raise ValueError(f"A {rotulo} não pode ser no futuro.")
+        return v
+
+    @model_validator(mode="after")
+    def valida_coerencia(self):
+        # Situação: ou está em implantação ou já está implantado.
+        if self.em_implantacao == self.ja_implantado:
+            raise ValueError(
+                "Informe se o empreendimento está em implantação ou se já está implantado "
+                "(apenas uma das opções)."
+            )
+        # Só vale o campo da situação escolhida.
+        if self.em_implantacao == "Sim":
+            self.data_inicio_operacoes = ""
+        else:
+            self.previsao_funcionamento = ""
+        if self.pca == "Não":
+            self.pca_data_revisao = ""
+
+        # Áreas: construída e verde cabem na área total; o percentual é calculado.
+        total = numero_br(self.area_total_terreno)
+        for campo, rotulo in (("area_construida", "área construída"), ("area_verde", "área verde")):
+            valor = getattr(self, campo)
+            if valor and numero_br(valor) > total:
+                raise ValueError(f"A {rotulo} não pode ser maior que a área total do terreno.")
+        if self.area_verde:
+            percentual = numero_br(self.area_verde) / total * 100
+            self.percentual_area_verde = f"{percentual:.1f}%".replace(".", ",")
+        else:
+            self.percentual_area_verde = ""
+        return self
 
     @model_validator(mode="after")
     def valida_ruido(self):

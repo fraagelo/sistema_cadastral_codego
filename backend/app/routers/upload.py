@@ -63,6 +63,7 @@ async def enviar_documento_assinado(
     nome_empresarial = (
         dados_formulario.get("nome_empresarial")
         or dados_formulario.get("nome_empresa")
+        or dados_formulario.get("razao_social")
         or (processo.usuario.nome if processo.usuario else "")
     )
 

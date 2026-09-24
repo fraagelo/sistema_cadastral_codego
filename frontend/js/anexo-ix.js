@@ -8,6 +8,30 @@ function onlyDigits(value) {
   return value.replace(/\D/g, '');
 }
 
+// Confere os dígitos verificadores (mesma regra do servidor).
+function cpfValido(digits) {
+  if (digits.length !== 11 || /^(\d)\1+$/.test(digits)) return false;
+  for (const tamanho of [9, 10]) {
+    let soma = 0;
+    for (let i = 0; i < tamanho; i += 1) soma += Number(digits[i]) * (tamanho + 1 - i);
+    if (((soma * 10) % 11) % 10 !== Number(digits[tamanho])) return false;
+  }
+  return true;
+}
+
+function cnpjValido(digits) {
+  if (digits.length !== 14 || /^(\d)\1+$/.test(digits)) return false;
+  const pesos = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  for (const tamanho of [12, 13]) {
+    const p = tamanho === 12 ? pesos : [6, ...pesos];
+    let soma = 0;
+    for (let i = 0; i < tamanho; i += 1) soma += Number(digits[i]) * p[i];
+    const resto = soma % 11;
+    if ((resto < 2 ? 0 : 11 - resto) !== Number(digits[tamanho])) return false;
+  }
+  return true;
+}
+
 function maskCnpj(digits) {
   return digits
     .slice(0, 14)
@@ -99,6 +123,46 @@ function clearError(fieldName) {
   if (field) field.closest('.field')?.classList.remove('field--invalid');
   errorEl.textContent = '';
 }
+
+// ---------------------------------------------------------------------------
+// Restrições de digitação: o campo não aceita o que não pode (letra em campo
+// de número, valor acima do limite etc.). O que não dá para barrar enquanto a
+// pessoa digita (campo vazio ou incompleto) é avisado ao clicar em "Gerar
+// documento PDF", rolando a página até o campo.
+// ---------------------------------------------------------------------------
+
+// Aplica "formatar" a cada alteração e só aceita o novo valor se "permitido"
+// concordar; senão o campo volta ao valor anterior.
+function restringirCampo(el, formatar, permitido = () => true) {
+  if (!el) return;
+  let anterior = el.value;
+  el.addEventListener('focus', () => { anterior = el.value; });
+  el.addEventListener('input', () => {
+    const novo = formatar ? formatar(el.value) : el.value;
+    if (!permitido(novo)) {
+      el.value = anterior;
+      return;
+    }
+    el.value = novo;
+    anterior = novo;
+  });
+}
+
+// Rola até o primeiro campo com erro e coloca o cursor nele.
+function irParaPrimeiroErro() {
+  const erro = document.querySelector('.field__error:not(:empty)');
+  if (!erro) return;
+  const campo = document.getElementById(erro.dataset.errorFor);
+  (campo || erro).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (campo && typeof campo.focus === 'function') campo.focus({ preventScroll: true });
+}
+
+// Quando a pessoa começa a corrigir um campo, o aviso dele some.
+form.addEventListener('input', (e) => { if (e.target.id) clearError(e.target.id); });
+form.addEventListener('change', (e) => { if (e.target.id) clearError(e.target.id); });
+
+// Nome de pessoa: só letras, espaço, apóstrofo, ponto e hífen.
+const formatarNomePessoa = (v) => v.replace(/[^\p{L}\s'.-]/gu, '').replace(/\s{2,}/g, ' ');
 
 function validateEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -242,12 +306,15 @@ function validateForm() {
   if (cnpjDigits.length !== 14) {
     setError('cnpj', 'CNPJ deve ter 14 dígitos.');
     valid = false;
+  } else if (!cnpjValido(cnpjDigits)) {
+    setError('cnpj', 'CNPJ inválido. Confira os números digitados.');
+    valid = false;
   } else {
     clearError('cnpj');
   }
 
   const telDigits = onlyDigits(document.getElementById('telefone').value);
-  if (telDigits.length < 10) {
+  if (telDigits.length < 10 || telDigits.length > 11) {
     setError('telefone', 'Informe um telefone válido, com DDD.');
     valid = false;
   } else {
@@ -324,6 +391,7 @@ form.addEventListener('submit', async (event) => {
   hideFeedback();
 
   if (!validateForm()) {
+    irParaPrimeiroErro();
     return;
   }
 
@@ -428,3 +496,6 @@ form.addEventListener('submit', async (event) => {
     }
   }
 });
+
+// Restrições deste formulário
+restringirCampo(document.getElementById('responsavel_tecnico_nome'), formatarNomePessoa);

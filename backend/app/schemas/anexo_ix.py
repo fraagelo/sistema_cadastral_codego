@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr, field_validator, model_validator
+from app.schemas.validacoes import cnpj_valido, telefone_valido
 
 SIM_NAO = {"Sim", "Não"}
 SIM_NAO_PARCIALMENTE = {"Sim", "Não", "Parcialmente"}
@@ -104,14 +105,16 @@ class AnexoIXCreate(BaseModel):
         digits = "".join(filter(str.isdigit, v))
         if len(digits) != 14:
             raise ValueError("CNPJ deve ter 14 dígitos.")
+        if not cnpj_valido(digits):
+            raise ValueError("CNPJ inválido. Confira os números digitados.")
         return digits
 
     @field_validator("telefone")
     @classmethod
     def valida_telefone(cls, v: str):
         digits = "".join(filter(str.isdigit, v))
-        if len(digits) < 10:
-            raise ValueError("Telefone deve ter DDD + número (mínimo 10 dígitos).")
+        if not telefone_valido(digits):
+            raise ValueError("Telefone deve ter DDD + número: 10 dígitos (fixo) ou 11 (celular).")
         return digits
 
     @field_validator("asfalto_frente")

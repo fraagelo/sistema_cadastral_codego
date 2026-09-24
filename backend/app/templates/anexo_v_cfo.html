@@ -3,213 +3,202 @@
 <head>
   <meta charset="UTF-8">
   <style>
+    /*
+      Reprodução do "Modelo do Cronograma" do Regulamento de Alienação de Áreas
+      (Anexo V, pág. 31). Medidas em pt tiradas do PDF oficial (A4 paisagem).
+      O Regulamento usa as fontes Lato e Antenna; como a Antenna é comercial,
+      usamos a Encode Sans (OFL) nas larguras Expanded/Semi Expanded.
+    */
+    @font-face { font-family: "Lato"; font-weight: 300; src: url("assets/fonts/Lato-Light.ttf"); }
+    @font-face { font-family: "Lato"; font-weight: 400; src: url("assets/fonts/Lato-Regular.ttf"); }
+    /* Substitutos da Antenna, escolhidos por largura e espessura medidas no PDF oficial. */
+    @font-face { font-family: "Regulamento"; font-weight: 300; src: url("assets/fonts/EncodeSansExpanded-Regular.ttf"); }
+    @font-face { font-family: "Regulamento"; font-weight: 700; src: url("assets/fonts/EncodeSansSemiExpanded-Bold.ttf"); }
+    @font-face { font-family: "Regulamento"; font-weight: 900; src: url("assets/fonts/EncodeSansSemiExpanded-Black.ttf"); }
+
     @page {
       size: A4 landscape;
-      margin: 1.5cm 1.5cm 1.8cm;
-      @bottom-center {
-        content: counter(page) "/" counter(pages);
-        font-family: "Helvetica", "Arial", sans-serif;
-        font-size: 7.5pt;
-        color: #888;
-        margin-bottom: 0.4cm;
-      }
+      /* A tabela do modelo começa em (126.1pt, 126.4pt) e tem 589.6pt de largura. */
+      margin: 126.4pt 126.1pt 40pt;
     }
     body {
-      font-family: "Helvetica", "Arial", sans-serif;
-      font-size: 10.5pt;
-      color: #1a1a1a;
-    }
-
-    /* Cabeçalho / timbre */
-    .timbre {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1.5pt solid #1f6d46;
-      padding-bottom: 10px;
-      margin-bottom: 18px;
-    }
-    .timbre img {
-      height: 40px;
-      width: auto;
-    }
-    .timbre__texto {
-      font-size: 8pt;
-      font-weight: bold;
-      color: #1f6d46;
-      line-height: 1.25;
-      text-transform: uppercase;
-    }
-
-    .anexo-tag {
-      font-size: 9pt;
-      letter-spacing: 0.05em;
-      color: #1f6d46;
-      margin: 0 0 2px;
-    }
-    h1 {
-      font-size: 13pt;
-      text-transform: uppercase;
-      color: #123f28;
-      margin: 0 0 16px;
-    }
-
-    .titulo-formulario {
-      text-align: center;
-      font-weight: bold;
-      font-size: 10.5pt;
-      border: 1pt solid #333;
-      border-bottom: none;
-      padding: 6px;
       margin: 0;
-    }
-    table.dados {
-      margin-top: 0;
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: collapse;
-      margin-bottom: 22px;
-    }
-    table.dados td {
-      border: 1pt solid #333;
-      padding: 5px 8px;
-      vertical-align: top;
-      word-break: break-word;
-      overflow-wrap: break-word;
-    }
-    table.dados td.rotulo {
-      width: 28%;
-      font-weight: bold;
-      background: #f2f2f2;
+      font-family: "Regulamento", sans-serif;
+      font-weight: 300;
+      font-size: 9pt;
+      color: #231f20;
     }
 
-    .data-cidade {
-      text-align: right;
-      margin-bottom: 18px;
+    /* Cabeçalho do Regulamento (repetido em todas as páginas) */
+    .cab-logo {
+      position: fixed;
+      left: -84.6pt;   /* 41.5pt na página */
+      top: -100.1pt;   /* 26.3pt na página */
+      width: 69.7pt;
+      height: 32.2pt;
     }
-    .corpo {
-      text-align: justify;
-      line-height: 1.55;
+    .cab-linha {
+      position: fixed;
+      left: -8.2pt;    /* 117.9pt na página */
+      top: -84.35pt;   /* 42.3pt na página */
+      width: 400.8pt;
+      /* Azul do Regulamento com transparência: sai #9396b4 sobre o branco. */
+      border-top: 0.5pt solid #9396b4;
     }
-
-    .assinatura {
-      margin-top: 40px;
+    .cab-texto {
+      position: fixed;
+      left: 417.4pt;   /* 543.5pt na página */
+      top: -88.9pt;
+      font-family: "Lato", sans-serif;
+      font-weight: 300;
+      font-size: 6pt;
+      letter-spacing: 2.336pt;
+      color: #9396b4;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .cab-pagina {
+      position: fixed;
+      left: 654.8pt;   /* 780.9pt na página */
+      top: -92.3pt;    /* 34.1pt na página */
+      width: 18.3pt;
+      height: 14.2pt;
+      background: #237570;
+      color: #ffffff;
+      font-family: "Lato", sans-serif;
+      font-weight: 400;
+      font-size: 9pt;
+      line-height: 12.8pt;
       text-align: center;
     }
-    .assinatura .linha {
-      border-top: 1pt solid #333;
-      width: 65%;
-      margin: 0 auto 4px;
+
+    .titulo {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -51.4pt;    /* 75pt na página */
+      margin: 0;
+      text-align: center;
+      font-weight: 900;
+      font-size: 14pt;
+      line-height: 1.2;
     }
-    .assinatura p {
-      margin: 2px 0;
+
+    table {
+      width: 589.6pt;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    td {
+      border: 0.25pt solid #231f20;
+      height: 20.75pt;
+      padding: 0 0 0 11.3pt;
+      vertical-align: middle;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    td.centro {
+      padding: 0;
+      text-align: center;
+    }
+    b {
+      font-weight: 700;
+    }
+
+    .dados td.titulo-tabela {
+      height: 23.95pt;
+      padding: 0;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    /* A grade do cronograma encosta na tabela de dados, sem linha dupla. */
+    .cronograma {
+      margin-top: -0.25pt;
+    }
+    .cronograma + .cronograma {
+      margin-top: 18pt;
+    }
+    /* Cada tabela do cronograma fica inteira na mesma página. */
+    .cronograma {
+      page-break-inside: avoid;
+    }
+    .cronograma col.servico {
+      width: 122.3pt;
+    }
+    .cronograma .trimestre {
+      font-weight: 700;
+      /* Trimestre com só 1 mês (coluna estreita): o rótulo quebra em duas linhas. */
+      white-space: normal;
+      line-height: 10.8pt;
+      padding: 2pt 0;
     }
 
     .protocolo {
       position: fixed;
-      bottom: -1.1cm;
-      right: 2cm;
-      font-size: 7.5pt;
-      color: #888;
-    }
-
-    table.cronograma {
-      width: auto;
-      table-layout: fixed;
-      border-collapse: collapse;
-      margin-bottom: 18px;
-      font-size: 9pt;
-      page-break-inside: avoid;
-    }
-    table.cronograma th,
-    table.cronograma td {
-      border: 1pt solid #333;
-      padding: 4px 5px;
-      text-align: center;
-    }
-    table.cronograma th {
-      background: #f2f2f2;
-    }
-    table.cronograma col.col-servico {
-      width: 4.8cm;
-    }
-    table.cronograma col.col-mes {
-      width: 1.75cm;
-    }
-    table.cronograma td.servico,
-    table.cronograma th.servico {
-      text-align: left;
-    }
-    table.cronograma .referencia {
-      display: block;
-      font-weight: normal;
-      font-size: 7pt;
-      color: #555;
+      right: 0;
+      bottom: -22pt;
+      font-family: "Lato", sans-serif;
+      font-weight: 300;
+      font-size: 6pt;
+      color: #888888;
     }
   </style>
 </head>
 <body>
 
-  <div class="timbre">
-    <img src="{{ brasao_data_uri }}" alt="Brasão CODEGO">
-    <div class="timbre__texto">
-      Companhia de Desenvolvimento<br>
-      Econômico de Goiás
-    </div>
-  </div>
+  <img class="cab-logo" src="{{ logo_data_uri }}" alt="Companhia de Desenvolvimento Econômico de Goiás">
+  <div class="cab-linha"></div>
+  <div class="cab-texto">REGULAMENTO DE ALIENAÇÃO DE ÁREAS • 2026</div>
+  <div class="cab-pagina">31</div>
 
-  <p class="anexo-tag">ANEXO V</p>
-  <h1>Modelo do Cronograma</h1>
+  <p class="titulo">MODELO DO CRONOGRAMA</p>
 
-  <p class="titulo-formulario">Cronograma Físico da Obra (CFO)</p>
   <table class="dados">
     <tr>
-      <td class="rotulo">Nome da empresa</td>
-      <td colspan="3">{{ nome_empresa }}</td>
+      <td class="titulo-tabela" colspan="2">Cronograma Físico da Obra (CFO)</td>
     </tr>
     <tr>
-      <td class="rotulo">Endereço</td>
-      <td colspan="3">{{ endereco }}</td>
+      <td colspan="2">Nome da empresa: <b>{{ nome_empresa }}</b></td>
     </tr>
     <tr>
-      <td class="rotulo">Área da Empresa</td>
-      <td colspan="3">{{ area_empresa }} m²</td>
+      <td colspan="2">Endereço: <b>{{ endereco }}</b></td>
     </tr>
     <tr>
-      <td class="rotulo">Área a ser Construída</td>
-      <td colspan="3">{{ area_construida }} m²</td>
+      <td colspan="2">Área da Empresa: <b>{{ area_empresa }} m2</b></td>
     </tr>
     <tr>
-      <td class="rotulo">Previsão início das Obras</td>
-      <td>{{ inicio_obras }}</td>
-      <td class="rotulo">Previsão Término das Obras</td>
-      <td>{{ termino_obras }}</td>
+      <td colspan="2">Área a ser Construída: <b>{{ area_construida }} m2</b></td>
+    </tr>
+    <tr>
+      <td>Previsão início das Obras: <b>{{ inicio_obras }}</b></td>
+      <td>Previsão Término das Obras: <b>{{ termino_obras }}</b></td>
     </tr>
   </table>
 
   {% for bloco in blocos %}
-  <table class="cronograma">
+  <table class="cronograma" style="width: {{ bloco.largura }}pt">
     <colgroup>
-      <col class="col-servico">
-      {% for mes in bloco.meses %}<col class="col-mes">{% endfor %}
+      <col class="servico">
+      {% for mes in bloco.meses %}<col style="width: {{ bloco.largura_mes }}pt">{% endfor %}
     </colgroup>
     <tr>
-      <th class="servico"></th>
+      <td></td>
       {% for trimestre in bloco.trimestres %}
-      <th colspan="{{ trimestre.colunas }}">{{ trimestre.rotulo }}</th>
+      <td class="centro trimestre" colspan="{{ trimestre.colunas }}">{{ trimestre.rotulo }}</td>
       {% endfor %}
     </tr>
     <tr>
-      <th class="servico">Serviços/ Mês</th>
+      <td>Serviços/ Mês</td>
       {% for mes in bloco.meses %}
-      <th>{{ mes.rotulo }}<span class="referencia">{{ mes.referencia }}</span></th>
+      <td class="centro">{{ mes.rotulo }}</td>
       {% endfor %}
     </tr>
     {% for linha in bloco.linhas %}
     <tr>
-      <td class="servico">{{ linha.descricao }}</td>
+      <td>{{ linha.descricao }}</td>
       {% for celula in linha.celulas %}
-      <td>{{ celula }}</td>
+      <td class="centro">{{ celula }}</td>
       {% endfor %}
     </tr>
     {% endfor %}

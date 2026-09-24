@@ -3,278 +3,297 @@
 <head>
   <meta charset="UTF-8">
   <style>
+    /*
+      Reprodução do Anexo III (Solicitação de Área) do Regulamento de Alienação
+      de Áreas, págs. 25 e 26. Medidas em pt tiradas do PDF oficial (A4
+      paisagem). O Regulamento usa as fontes Lato e Antenna; como a Antenna é
+      comercial, usamos a Encode Sans (OFL) nas larguras Expanded/Semi Expanded.
+    */
+    @font-face { font-family: "Lato"; font-weight: 300; src: url("assets/fonts/Lato-Light.ttf"); }
+    @font-face { font-family: "Lato"; font-weight: 400; src: url("assets/fonts/Lato-Regular.ttf"); }
+    /* Substitutos da Antenna, escolhidos por largura e espessura medidas no PDF oficial. */
+    @font-face { font-family: "Regulamento"; font-weight: 300; src: url("assets/fonts/EncodeSansExpanded-Regular.ttf"); }
+    @font-face { font-family: "Regulamento"; font-weight: 700; src: url("assets/fonts/EncodeSansSemiExpanded-Bold.ttf"); }
+
     @page {
-      size: A4;
-      margin: 2cm 2cm 2.2cm;
-      @bottom-center {
-        content: counter(page) "/" counter(pages);
-        font-family: "Helvetica", "Arial", sans-serif;
-        font-size: 7.5pt;
-        color: #888;
-        margin-bottom: 0.5cm;
-      }
-    }
-    body {
-      font-family: "Helvetica", "Arial", sans-serif;
-      font-size: 10.5pt;
-      color: #1a1a1a;
-    }
-
-    /* Cabeçalho / timbre */
-    .timbre {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1.5pt solid #1f6d46;
-      padding-bottom: 10px;
-      margin-bottom: 18px;
-    }
-    .timbre img {
-      height: 40px;
-      width: auto;
-    }
-    .timbre__texto {
-      font-size: 8pt;
-      font-weight: bold;
-      color: #1f6d46;
-      line-height: 1.25;
-      text-transform: uppercase;
-    }
-
-    .anexo-tag {
-      font-size: 9pt;
-      letter-spacing: 0.05em;
-      color: #1f6d46;
-      margin: 0 0 2px;
-    }
-    h1 {
-      font-size: 13pt;
-      text-transform: uppercase;
-      color: #123f28;
-      margin: 0 0 16px;
-    }
-
-    .titulo-formulario {
-      text-align: center;
-      font-weight: bold;
-      font-size: 10.5pt;
-      border: 1pt solid #333;
-      border-bottom: none;
-      padding: 6px;
+      size: A4 landscape;
       margin: 0;
     }
-    table.dados {
-      margin-top: 0;
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: collapse;
-      margin-bottom: 22px;
+    body {
+      margin: 0;
+      font-family: "Regulamento", sans-serif;
+      font-weight: 300;
+      font-size: 9pt;
+      color: #231f20;
     }
-    table.dados td {
-      border: 1pt solid #333;
-      padding: 5px 8px;
-      vertical-align: top;
-      word-break: break-word;
-      overflow-wrap: break-word;
+    .pagina {
+      position: relative;
+      height: 595.2pt;
+      overflow: hidden;
     }
-    table.dados td.rotulo {
-      width: 28%;
-      font-weight: bold;
-      background: #f2f2f2;
+    .pagina + .pagina {
+      page-break-before: always;
     }
 
-    .data-cidade {
-      text-align: right;
-      margin-bottom: 18px;
+    /* Cabeçalho do Regulamento */
+    .cab-logo {
+      position: absolute;
+      left: 41.5pt;
+      top: 26.3pt;
+      width: 69.7pt;
+      height: 32.2pt;
     }
-    .corpo {
-      text-align: justify;
-      line-height: 1.55;
+    .cab-linha {
+      position: absolute;
+      left: 117.9pt;
+      top: 42.05pt;
+      width: 400.8pt;
+      /* Azul do Regulamento com transparência: sai #9396b4 sobre o branco. */
+      border-top: 0.5pt solid #9396b4;
     }
-
-    .assinatura {
-      margin-top: 40px;
+    .cab-texto {
+      position: absolute;
+      left: 543.5pt;
+      top: 37.5pt;
+      font-family: "Lato", sans-serif;
+      font-weight: 300;
+      font-size: 6pt;
+      letter-spacing: 2.336pt;
+      color: #9396b4;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .cab-pagina {
+      position: absolute;
+      left: 780.9pt;
+      top: 34.1pt;
+      width: 18.3pt;
+      height: 14.2pt;
+      background: #237570;
+      color: #ffffff;
+      font-family: "Lato", sans-serif;
+      font-weight: 400;
+      font-size: 9pt;
+      line-height: 12.8pt;
       text-align: center;
     }
-    .assinatura .linha {
-      border-top: 1pt solid #333;
-      width: 65%;
-      margin: 0 auto 4px;
+
+    /* Tabelas: linhas finas de 0.25pt, como no modelo */
+    table {
+      border-collapse: collapse;
+      table-layout: fixed;
     }
-    .assinatura p {
-      margin: 2px 0;
+    td {
+      border: 0.25pt solid #231f20;
+      height: 17.25pt;
+      padding: 0 0 0 11pt;
+      vertical-align: middle;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    td.centro {
+      padding: 0;
+      text-align: center;
+    }
+    /* Nome dos campos em negrito, para diferenciar das respostas. */
+    td.rotulo {
+      font-weight: 700;
+    }
+    sup {
+      font-size: 5.2pt;
+      line-height: 0;
+      vertical-align: 3pt;
+    }
+
+    .area {
+      margin-left: 191.8pt;
+      width: 458.5pt;
+    }
+    .dados {
+      margin-left: 191.6pt;
+      width: 458.7pt;
+    }
+    .dados col.rotulo {
+      width: 162pt;
+    }
+    .empresa {
+      margin-top: 15.2pt;
+    }
+    .representante {
+      margin-top: 17.6pt;
+    }
+    /* A grade de CNAEs encosta na tabela do representante, sem linha dupla. */
+    .cnaes {
+      margin-top: -0.25pt;
+    }
+    .cnaes col.numero {
+      width: 84.5pt;
+    }
+
+    .paragrafo {
+      width: 461.4pt;
+      margin: 0 0 0 191.5pt;
+      font-size: 10.5pt;
+      line-height: 12.6pt;
+      text-align: justify;
+      hyphens: auto;
+    }
+    .declaracao {
+      margin-top: 30.2pt;
+    }
+
+    /* Página 2 */
+    .checklist {
+      margin-left: 172pt;
+      width: 501.4pt;
+    }
+    .checklist col.check {
+      width: 77pt;
+    }
+    .checklist .cabecalho td {
+      padding: 0;
+      text-align: center;
+      font-weight: 700;
+    }
+    .checklist .documento td {
+      height: 28.45pt;
+      padding: 0 0 0 0.1pt;
+      line-height: 10.8pt;
+      white-space: pre-line;
+      /* A linha mais longa (item VIII) ocupa a coluna inteira no modelo. */
+      letter-spacing: -0.05pt;
+    }
+    .checklist .documento td.marcado {
+      padding: 0;
+      text-align: center;
+      font-weight: 700;
+    }
+    .observacao {
+      margin-top: 26pt;
+      /* Ajuste mínimo para as linhas quebrarem nas mesmas palavras do modelo. */
+      letter-spacing: -0.03pt;
+    }
+    .centralizado {
+      width: auto;
+      margin: 0;
+      text-align: center;
+    }
+    .local-data {
+      margin-top: 25.2pt;
+    }
+    .atenciosamente {
+      margin-top: 25.2pt;
+    }
+    .assinatura {
+      margin-top: 25.2pt;
     }
 
     .protocolo {
-      position: fixed;
-      bottom: -1.3cm;
-      right: 2cm;
-      font-size: 7.5pt;
-      color: #888;
-    }
-
-    table.dados th {
-      border: 1pt solid #333;
-      padding: 5px 8px;
-      text-align: center;
-      font-weight: bold;
-      background: #f2f2f2;
-    }
-    table.dados td.centro {
-      text-align: center;
-    }
-    table.dados .numero {
-      width: 18%;
-    }
-    table.dados .check {
-      width: 14%;
-      text-align: center;
-      font-weight: bold;
-      vertical-align: middle;
-    }
-    table.dados tr {
-      page-break-inside: avoid;
-    }
-    table.checklist {
-      page-break-before: always;
-    }
-    .observacao {
-      font-size: 9.5pt;
-      text-align: justify;
-      line-height: 1.5;
-      margin-bottom: 22px;
+      position: absolute;
+      right: 36pt;
+      bottom: 16pt;
+      font-family: "Lato", sans-serif;
+      font-weight: 300;
+      font-size: 6pt;
+      color: #888888;
     }
   </style>
 </head>
 <body>
 
-  <div class="timbre">
-    <img src="{{ brasao_data_uri }}" alt="Brasão CODEGO">
-    <div class="timbre__texto">
-      Companhia de Desenvolvimento<br>
-      Econômico de Goiás
-    </div>
-  </div>
-
-  <p class="anexo-tag">ANEXO III</p>
-  <h1>Solicitação de Área</h1>
-
-  <table class="dados">
-    <tr>
-      <th>Município de interesse</th>
-      <th>Metragem necessária (m²)</th>
-    </tr>
-    <tr>
-      <td class="centro">{{ municipio_interesse }}</td>
-      <td class="centro">{{ metragem_necessaria }}</td>
-    </tr>
-  </table>
-
-  <p class="titulo-formulario">Dados cadastrais da empresa</p>
-  <table class="dados">
-    <tr>
-      <td class="rotulo">Nome empresarial</td>
-      <td>{{ nome_empresarial }}</td>
-    </tr>
-    <tr>
-      <td class="rotulo">CNPJ</td>
-      <td>{{ cnpj }}</td>
-    </tr>
-    <tr>
-      <td class="rotulo">Endereço para correspondência</td>
-      <td>{{ endereco_correspondencia_empresa }}</td>
-    </tr>
-  </table>
-
-  <p class="titulo-formulario">Dados cadastrais do representante da empresa</p>
-  <table class="dados">
-    <tr>
-      <td class="rotulo">Nome</td>
-      <td>{{ representante_nome }}</td>
-    </tr>
-    <tr>
-      <td class="rotulo">CPF</td>
-      <td>{{ representante_cpf }}</td>
-    </tr>
-    <tr>
-      <td class="rotulo">RG</td>
-      <td>{{ representante_rg }}</td>
-    </tr>
-    <tr>
-      <td class="rotulo">Nome da mãe</td>
-      <td>{{ representante_nome_mae }}</td>
-    </tr>
-    <tr>
-      <td class="rotulo">CNPJ</td>
-      <td>{{ cnpj }}</td>
-    </tr>
-    <tr>
-      <td class="rotulo">Endereço eletrônico (e-mail)</td>
-      <td>{{ email }}</td>
-    </tr>
-    <tr>
-      <td class="rotulo">Telefones</td>
-      <td>{{ telefones }}</td>
-    </tr>
-    <tr>
-      <td class="rotulo">Endereço para correspondência</td>
-      <td>{{ representante_endereco_correspondencia }}</td>
-    </tr>
-  </table>
-
-  <table class="dados">
-    <tr>
-      <th class="numero">Nº CNAE</th>
-      <th>Descrição da Atividade</th>
-    </tr>
-    {% for cnae in cnaes %}
-    <tr>
-      <td class="numero">{{ loop.index }}. {{ cnae.numero }}</td>
-      <td>{{ cnae.descricao }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-
-  <p class="corpo">
-    Havendo disponibilidade de imóvel, a solicitante declara ter ciência dos termos e
-    prazos estabelecidos no Regulamento para Alienações de Áreas da CODEGO,
-    requerendo, desde já, a formalização do processo administrativo para aquisição
-    de área e a concessão de apoio locacional, indicado no art. 3º, inciso I da lei
-    nº 13.064 de 14/10/2015.
-  </p>
-
-  <table class="dados checklist">
-    <tr>
-      <th>Documentação que acompanha o requerimento:</th>
-      <th class="check">Check list</th>
-    </tr>
-    {% for documento in documentos %}
-    <tr>
-      <td>{{ documento.texto }}</td>
-      <td class="check">{% if documento.marcado %}X{% endif %}</td>
-    </tr>
-    {% endfor %}
-  </table>
-
-  <p class="observacao">
-    Observação: No caso de empresas em funcionamento em outros Estados que queiram
-    transferir suas atividades ou iniciar as atividades de filial no Estado de Goiás,
-    deverão ser apresentadas certidões referentes ao Estado e Município em que estejam
-    instaladas (ou, no caso de filial, onde estejam instaladas a matriz) e referentes
-    ao Estado de Goiás.
-  </p>
-
-  <p class="data-cidade">{{ cidade_data }}</p>
-
-  <p class="corpo">Atenciosamente,</p>
-
-  <div class="assinatura">
-    <div class="linha"></div>
-    <p>{{ representante_nome }}</p>
-    <p>CPF {{ representante_cpf }}</p>
-  </div>
-
+  {% macro cabecalho(numero_pagina) %}
+  <img class="cab-logo" src="{{ logo_data_uri }}" alt="Companhia de Desenvolvimento Econômico de Goiás">
+  <div class="cab-linha"></div>
+  <div class="cab-texto">REGULAMENTO DE ALIENAÇÃO DE ÁREAS • 2026</div>
+  <div class="cab-pagina">{{ numero_pagina }}</div>
   <div class="protocolo">Protocolo interno: {{ protocolo }}</div>
+  {% endmacro %}
+
+  <div class="pagina" style="padding-top: 77.4pt;">
+    {{ cabecalho(25) }}
+
+    <table class="area">
+      <tr>
+        <td class="centro rotulo">Município de interesse</td>
+        <td class="centro rotulo">Metragem necessária (m<sup>2</sup>)</td>
+      </tr>
+      <tr>
+        <td class="centro">{{ municipio_interesse }}</td>
+        <td class="centro">{{ metragem_necessaria }}</td>
+      </tr>
+    </table>
+
+    <table class="dados empresa">
+      <colgroup><col class="rotulo"><col></colgroup>
+      <tr><td class="centro rotulo" colspan="2">Dados cadastrais da empresa</td></tr>
+      <tr><td class="rotulo">Nome empresarial</td><td>{{ nome_empresarial }}</td></tr>
+      <tr><td class="rotulo">CNPJ</td><td>{{ cnpj }}</td></tr>
+      <tr><td class="rotulo">Endereço para correspondência</td><td>{{ endereco_correspondencia_empresa }}</td></tr>
+    </table>
+
+    <table class="dados representante">
+      <colgroup><col class="rotulo"><col></colgroup>
+      <tr><td class="centro rotulo" colspan="2">Dados cadastrais do representante da empresa</td></tr>
+      <tr><td class="rotulo">Nome</td><td>{{ representante_nome }}</td></tr>
+      <tr><td class="rotulo">CPF</td><td>{{ representante_cpf }}</td></tr>
+      <tr><td class="rotulo">RG</td><td>{{ representante_rg }}</td></tr>
+      <tr><td class="rotulo">Nome da mãe</td><td>{{ representante_nome_mae }}</td></tr>
+      <tr><td class="rotulo">CNPJ</td><td>{{ cnpj }}</td></tr>
+      <tr><td class="rotulo">Endereço eletrônico (e-mail)</td><td>{{ email }}</td></tr>
+      <tr><td class="rotulo">Telefones</td><td>{{ telefones }}</td></tr>
+      <tr><td class="rotulo">Endereço para correspondência</td><td>{{ representante_endereco_correspondencia }}</td></tr>
+    </table>
+    <table class="dados cnaes">
+      <colgroup><col class="numero"><col></colgroup>
+      <tr><td class="rotulo">Nº CNAE</td><td class="rotulo">Descrição da Atividade</td></tr>
+      {% for cnae in cnaes %}
+      <tr><td>{{ loop.index }}. {{ cnae.numero }}</td><td>{{ cnae.descricao }}</td></tr>
+      {% endfor %}
+    </table>
+
+    <p class="paragrafo declaracao">
+      Havendo disponibilidade de imóvel, a solicitante declara ter ciência dos termos e
+      prazos estabelecidos no Regulamento para Alienações de Áreas da CODEGO, requerendo,
+      desde já, a formalização do processo administrativo para aquisição de área e a
+      concessão de apoio locacional, indicado no art. 3º, inciso I da lei nº 13.064 de
+      14/10/2015.
+    </p>
+  </div>
+
+  <div class="pagina" style="padding-top: 77.2pt;">
+    {{ cabecalho(26) }}
+
+    <table class="checklist">
+      <colgroup><col><col class="check"></colgroup>
+      <tr class="cabecalho">
+        <td>Documentação que acompanha o requerimento:</td>
+        <td>Check list</td>
+      </tr>
+      {% for documento in documentos %}
+      <tr class="documento">
+        <td>{{ documento.texto }}</td>
+        <td class="marcado">{% if documento.marcado %}X{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <p class="paragrafo observacao">
+      Observação: No caso de empresas em funcionamento em outros Estados que queiram
+      transferir suas atividades ou iniciar as atividades de filial no Estado de Goiás,
+      deverão ser apresentadas certidões referentes ao Estado e Município em que estejam
+      instaladas (ou, no caso de filial, onde estejam instaladas a matriz) e referentes ao
+      Estado de Goiás.
+    </p>
+
+    <p class="paragrafo centralizado local-data">{{ cidade_data }}</p>
+
+    <p class="paragrafo atenciosamente">Atenciosamente,</p>
+
+    <p class="paragrafo centralizado assinatura">
+      {{ representante_nome }}<br>
+      CPF {{ representante_cpf }}
+    </p>
+  </div>
 
 </body>
 </html>

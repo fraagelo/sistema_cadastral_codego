@@ -3,174 +3,242 @@
 <head>
   <meta charset="UTF-8">
   <style>
+    /*
+      Reprodução do "Modelo da Declaração de Uso da Rede de Abastecimento de
+      Água e de Esgoto da CODEGO" do Regulamento (Anexo V, pág. 27).
+      Medidas em pt tiradas do PDF oficial (A4 paisagem), fonte Montserrat 7.222
+      (a mesma versão usada no Regulamento).
+    */
+    /* O "Light" usado no Regulamento (Montserrat da Adobe) tem a espessura da
+       Regular da distribuição oficial; por isso o texto comum usa a Regular. */
+    @font-face { font-family: "Montserrat"; font-weight: 400; src: url("assets/fonts/Montserrat-Regular.ttf"); }
+    @font-face { font-family: "Montserrat"; font-weight: 500; src: url("assets/fonts/Montserrat-Medium.ttf"); }
+    @font-face { font-family: "Montserrat"; font-weight: 700; src: url("assets/fonts/Montserrat-Bold.ttf"); }
+    @font-face { font-family: "Montserrat"; font-weight: 900; src: url("assets/fonts/Montserrat-Black.ttf"); }
+
     @page {
-      size: A4;
-      margin: 2cm 2cm 2.2cm;
-    }
-    body {
-      font-family: "Helvetica", "Arial", sans-serif;
-      font-size: 10.5pt;
-      color: #1a1a1a;
-    }
-
-    /* Cabeçalho / timbre */
-    .timbre {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1.5pt solid #1f6d46;
-      padding-bottom: 10px;
-      margin-bottom: 18px;
-    }
-    .timbre img {
-      height: 40px;
-      width: auto;
-    }
-    .timbre__texto {
-      font-size: 8pt;
-      font-weight: bold;
-      color: #1f6d46;
-      line-height: 1.25;
-      text-transform: uppercase;
-    }
-
-    .anexo-tag {
-      font-size: 9pt;
-      letter-spacing: 0.05em;
-      color: #1f6d46;
-      margin: 0 0 2px;
-    }
-    h1 {
-      font-size: 13pt;
-      text-transform: uppercase;
-      color: #123f28;
-      margin: 0 0 16px;
-    }
-
-    .titulo-formulario {
-      text-align: center;
-      font-weight: bold;
-      font-size: 10.5pt;
-      border: 1pt solid #333;
-      border-bottom: none;
-      padding: 6px;
+      size: A4 landscape;
       margin: 0;
     }
-    table.dados {
-      margin-top: 0;
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: collapse;
-      margin-bottom: 22px;
+    body {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-weight: 400;
+      font-size: 10.5pt;
+      line-height: 12.6pt;
+      color: #231f20;
+      /* O Regulamento usa espaçamento entre letras levemente negativo. */
+      letter-spacing: -0.15pt;
     }
-    table.dados td {
-      border: 1pt solid #333;
-      padding: 5px 8px;
-      vertical-align: top;
-      word-break: break-word;
-      overflow-wrap: break-word;
-    }
-    table.dados td.rotulo {
-      width: 28%;
-      font-weight: bold;
-      background: #f2f2f2;
+    .abs {
+      position: absolute;
+      margin: 0;
     }
 
-    .data-cidade {
-      text-align: right;
-      margin-bottom: 18px;
+    /* Cabeçalho do Regulamento */
+    .faixa {
+      left: 36pt;
+      top: 36pt;
+      width: 738.1pt;
+      height: 28.3pt;
+    }
+    .faixa-texto {
+      left: 49.6pt;
+      top: 44.6pt;
+      font-size: 11pt;
+      line-height: 13.4pt;
+      letter-spacing: -0.14pt;
+      color: #ffffff;
+      white-space: nowrap;
+    }
+    .faixa-texto strong {
+      font-weight: 500;
+    }
+    .faixa-barra {
+      left: 774.3pt;
+      top: 36pt;
+      width: 4.7pt;
+      height: 28.3pt;
+      background: #fab03b;
+    }
+    .faixa-pagina {
+      left: 787.4pt;
+      top: 42.8pt;
+      font-size: 15pt;
+      line-height: 18.3pt;
+      font-weight: 900;
+      color: #fab03b;
+    }
+    /* Linha dourada que some à direita, como no modelo */
+    .faixa-linha {
+      left: 36pt;
+      top: 67.5pt;
+      width: 525.3pt;
+      height: 1pt;
+      background: linear-gradient(to right, #fab03b 0%, #fab03b 80%, rgba(250, 176, 59, 0) 99%);
+    }
+
+    .subtitulo {
+      left: 36pt;
+      top: 89.5pt;
+      white-space: nowrap;
+      letter-spacing: -0.3pt;
+    }
+    .subtitulo strong {
+      font-weight: 700;
+    }
+
+    /* Formulário (caixa com bordas de 1pt) */
+    .formulario {
+      left: 129pt;
+      top: 143.1pt;
+      width: 563.4pt;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    .formulario td {
+      border: 1pt solid #231f20;
+      padding: 0 4pt 0 3.5pt;
+      vertical-align: middle;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .formulario .titulo-formulario {
+      height: 26.2pt;
+      padding-top: 3.7pt;
+      vertical-align: top;
+      text-align: center;
+      font-weight: 700;
+      letter-spacing: -0.28pt;
+      white-space: normal;
+    }
+    .formulario .campo {
+      height: 13.5pt;
+      padding-top: 3.8pt;
+      vertical-align: top;
+    }
+    /* O modelo só tem o nome do campo; o valor vai na mesma linha, alinhado. */
+    .formulario .rotulo {
+      display: inline-block;
+      width: 120pt;
+      /* Nome dos campos em negrito, para diferenciar das respostas. */
+      font-weight: 700;
+    }
+    .formulario .corpo-celula {
+      height: 244.1pt;
+      padding: 0;
+      vertical-align: top;
+      white-space: normal;
     }
     .corpo {
+      position: relative;
+      height: 244.1pt;
+    }
+    .cidade-data {
+      position: absolute;
+      right: 1.2pt;
+      top: 16.3pt;
+      margin: 0;
+    }
+    .texto {
+      position: absolute;
+      left: 3.5pt;
+      right: 4pt;
+      top: 54.1pt;
+      margin: 0;
       text-align: justify;
-      line-height: 1.55;
+      hyphens: auto;
+    }
+    .assinatura-linha {
+      position: absolute;
+      left: 149.8pt;   /* 279.8pt na página */
+      top: 191.8pt;    /* 476.6pt na página */
+      width: 261.7pt;
+      border-top: 0.5pt solid #231f20;
+    }
+    .assinatura {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 192.7pt;
+      margin: 0;
+      text-align: center;
+      letter-spacing: -0.28pt;
     }
 
-    .assinatura {
-      margin-top: 40px;
-      text-align: center;
+    /* Rodapé: faixas verde e dourada */
+    .rodape-verde {
+      left: 0;
+      top: 591.9pt;
+      width: 312.2pt;
+      height: 3.4pt;
+      background: #00756f;
     }
-    .assinatura .linha {
-      border-top: 1pt solid #333;
-      width: 65%;
-      margin: 0 auto 4px;
-    }
-    .assinatura p {
-      margin: 2px 0;
+    .rodape-dourado {
+      left: 312.2pt;
+      top: 591.9pt;
+      width: 529.7pt;
+      height: 3.4pt;
+      background: #fab03b;
     }
 
     .protocolo {
-      position: fixed;
-      bottom: 0.8cm;
-      right: 2cm;
-      font-size: 7.5pt;
-      color: #888;
+      right: 36pt;
+      top: 575pt;
+      font-size: 6pt;
+      line-height: 8pt;
+      color: #888888;
     }
   </style>
 </head>
 <body>
 
-  <div class="timbre">
-    <img src="{{ brasao_data_uri }}" alt="Brasão CODEGO">
-    <div class="timbre__texto">
-      Companhia de Desenvolvimento<br>
-      Econômico de Goiás
-    </div>
-  </div>
+  <img class="abs faixa" src="{{ faixa_data_uri }}" alt="Companhia de Desenvolvimento Econômico de Goiás — Governo de Goiás">
+  <p class="abs faixa-texto"><strong>ANEXO V&nbsp;&nbsp;•</strong>&nbsp;&nbsp;EXIGÊNCIAS TÉCNICAS DO PROJETO DE OCUPAÇÃO DE ÁREA (POA)</p>
+  <div class="abs faixa-barra"></div>
+  <p class="abs faixa-pagina">27</p>
+  <div class="abs faixa-linha"></div>
 
-  <p class="anexo-tag">ANEXO V — EXIGÊNCIAS TÉCNICAS DO PROJETO DE OCUPAÇÃO DE ÁREA (POA)</p>
-  <h1>Modelo da Declaração de Uso da Rede de Abastecimento de Água e de Esgoto da CODEGO</h1>
+  <p class="abs subtitulo">MODELO DA <strong>DECLARAÇÃO DE USO DA REDE DE ABASTECIMENTO DE ÁGUA E DE ESGOTO DA CODEGO</strong></p>
 
-  <p class="titulo-formulario">Declaração de Uso da Rede de Abastecimento de Água e de Esgoto da CODEGO</p>
-  <table class="dados">
+  <table class="abs formulario">
     <tr>
-      <td class="rotulo">Processo N°</td>
-      <td>{{ processo_numero }}</td>
+      <td class="titulo-formulario">DECLARAÇÃO DE USO DA REDE DE<br>ABASTECIMENTO DE ÁGUA E DE ESGOTO DA CODEGO</td>
     </tr>
+    <tr><td class="campo"><span class="rotulo">Processo Nº</span>{{ processo_numero }}</td></tr>
+    <tr><td class="campo"><span class="rotulo">Nome Empresarial</span>{{ nome_empresarial }}</td></tr>
+    <tr><td class="campo"><span class="rotulo">CNPJ</span>{{ cnpj }}</td></tr>
+    <tr><td class="campo"><span class="rotulo">Endereço</span>{{ endereco }}</td></tr>
+    <tr><td class="campo"><span class="rotulo">Telefone</span>{{ telefone }}</td></tr>
+    <tr><td class="campo"><span class="rotulo">Email</span>{{ email }}</td></tr>
     <tr>
-      <td class="rotulo">Nome Empresarial</td>
-      <td>{{ nome_empresarial }}</td>
-    </tr>
-    <tr>
-      <td class="rotulo">CNPJ</td>
-      <td>{{ cnpj }}</td>
-    </tr>
-    <tr>
-      <td class="rotulo">Endereço</td>
-      <td>{{ endereco }}</td>
-    </tr>
-    <tr>
-      <td class="rotulo">Telefone</td>
-      <td>{{ telefone }}</td>
-    </tr>
-    <tr>
-      <td class="rotulo">Email</td>
-      <td>{{ email }}</td>
+      <td class="corpo-celula">
+        <div class="corpo">
+          <p class="cidade-data">{{ cidade_data }}.</p>
+
+          <p class="texto">
+            Ilmo. Sr. Diretor Presidente da Companhia de Desenvolvimento Econômico de Goiás,
+            A empresa {{ nome_empresarial }}, supra qualificada, por meio de seu/sua
+            representante legal {{ representante_nome }}, {{ representante_estado_civil }},
+            portador(a) do RG nº {{ representante_rg }} e CPF nº {{ representante_cpf }},
+            residente e domiciliado(a) em {{ representante_endereco }}, vem, nos moldes do
+            ANEXO V do Regulamento para Alienação de Áreas e Empreendimentos da CODEGO,
+            DECLARAR O COMPROMISSO DA UTILIZAÇÃO DA REDE DE ABASTECIMENTO DE ÁGUA E DE
+            ESGOTO FORNECIDOS PELA COMPANHIA, estando CIENTE que o não cumprimento poderá
+            acarretar penalidades aplicadas por esta Companhia.
+          </p>
+
+          <div class="assinatura-linha"></div>
+          <p class="assinatura">ASSINATURA DO RESPONSÁVEL LEGAL</p>
+        </div>
+      </td>
     </tr>
   </table>
 
-  <p class="data-cidade">{{ cidade_data }}</p>
+  <p class="abs protocolo">Protocolo interno: {{ protocolo }}</p>
 
-  <p class="corpo">Ilmo. Sr. Diretor Presidente da Companhia de Desenvolvimento Econômico de Goiás,</p>
-
-  <p class="corpo">
-    A empresa <strong>{{ nome_empresarial }}</strong>, supra qualificada, por meio de
-    seu/sua representante legal <strong>{{ representante_nome }}</strong>,
-    {{ representante_estado_civil }}, portador(a) do RG nº {{ representante_rg }} e
-    CPF nº {{ representante_cpf }}, residente e domiciliado(a) em
-    {{ representante_endereco }}, vem, nos moldes do ANEXO V do Regulamento para
-    Alienação de Áreas e Empreendimentos da CODEGO, DECLARAR O COMPROMISSO DA
-    UTILIZAÇÃO DA REDE DE ABASTECIMENTO DE ÁGUA E DE ESGOTO FORNECIDOS PELA
-    COMPANHIA, estando CIENTE que o não cumprimento poderá acarretar penalidades
-    aplicadas por esta Companhia.
-  </p>
-
-  <div class="assinatura">
-    <div class="linha"></div>
-    <p>ASSINATURA DO RESPONSÁVEL LEGAL</p>
-    <p>{{ nome_empresarial }}</p>
-  </div>
-
-  <div class="protocolo">Protocolo interno: {{ protocolo }}</div>
+  <div class="abs rodape-verde"></div>
+  <div class="abs rodape-dourado"></div>
 
 </body>
 </html>

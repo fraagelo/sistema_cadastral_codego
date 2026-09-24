@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr, field_validator
+from app.schemas.validacoes import cnpj_valido, cpf_valido, rg_valido, telefone_valido
 
 ESTADOS_CIVIS_VALIDOS = {
     "Solteiro(a)",
@@ -64,6 +65,8 @@ class AnexoViiiACreate(BaseModel):
         digits = "".join(filter(str.isdigit, v))
         if len(digits) != 14:
             raise ValueError("CNPJ deve ter 14 dígitos.")
+        if not cnpj_valido(digits):
+            raise ValueError("CNPJ inválido. Confira os números digitados.")
         return digits
 
     @field_validator("comprador_cnpj")
@@ -72,7 +75,16 @@ class AnexoViiiACreate(BaseModel):
         digits = "".join(filter(str.isdigit, v))
         if len(digits) != 14:
             raise ValueError("CNPJ da empresa compradora deve ter 14 dígitos.")
+        if not cnpj_valido(digits):
+            raise ValueError("CNPJ da empresa compradora inválido. Confira os números digitados.")
         return digits
+
+    @field_validator("representante_rg")
+    @classmethod
+    def valida_rg(cls, v: str):
+        if not rg_valido(v):
+            raise ValueError("RG inválido: informe o número completo do documento (entre 5 e 14 números).")
+        return v
 
     @field_validator("representante_cpf")
     @classmethod
@@ -80,14 +92,16 @@ class AnexoViiiACreate(BaseModel):
         digits = "".join(filter(str.isdigit, v))
         if len(digits) != 11:
             raise ValueError("CPF do representante deve ter 11 dígitos.")
+        if not cpf_valido(digits):
+            raise ValueError("CPF do representante inválido. Confira os números digitados.")
         return digits
 
     @field_validator("telefone")
     @classmethod
     def valida_telefone(cls, v: str):
         digits = "".join(filter(str.isdigit, v))
-        if len(digits) < 10:
-            raise ValueError("Telefone deve ter DDD + número (mínimo 10 dígitos).")
+        if not telefone_valido(digits):
+            raise ValueError("Telefone deve ter DDD + número: 10 dígitos (fixo) ou 11 (celular).")
         return digits
 
     @field_validator("representante_estado_civil")
