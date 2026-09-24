@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anexo VI (EVTF) — Sistema Cadastral CODEGO</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <div class="page">
+
+    <header class="letterhead">
+      <img class="letterhead__mark" src="assets/brasao_codego.png" alt="Brasão da Companhia de Desenvolvimento Econômico de Goiás">
+      <div class="letterhead__text">
+        <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
+        <h1 class="letterhead__title">Anexo VI — Viabilidade Técnica e Financeira (EVTF)</h1>
+      </div>
+    </header>
+
+    <ol class="stepper" aria-label="Etapas do processo">
+      <li class="stepper__item stepper__item--current">
+        <span class="stepper__index">1</span>
+        <span class="stepper__label">Cadastro</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">2</span>
+        <span class="stepper__label">Assinatura</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">3</span>
+        <span class="stepper__label">Recibo</span>
+      </li>
+      <li class="stepper__item">
+        <span class="stepper__index">4</span>
+        <span class="stepper__label">Mensagens</span>
+      </li>
+    </ol>
+
+    <main class="card">
+      <div class="card__intro">
+        <h2 class="card__title">Formulário de Viabilidade Técnica e Financeira</h2>
+        <p class="card__desc">
+          Preencha os campos abaixo para gerar o documento em PDF. Esta primeira versão
+          cobre os Dados Cadastrais, Dados Econômicos e a Concepção do Projeto — as
+          tabelas de DRE, produção anual, mercado, matérias-primas, investimentos e
+          custos anuais serão adicionadas numa etapa seguinte e podem ser anexadas
+          separadamente por enquanto.
+        </p>
+      </div>
+
+      <form id="form-anexo-vi-evtf" novalidate>
+
+        <h3 class="section-title">1. Dados Cadastrais</h3>
+
+        <div class="field">
+          <label for="razao_social">Razão Social</label>
+          <input type="text" id="razao_social" name="razao_social" required>
+          <p class="field__error" data-error-for="razao_social"></p>
+        </div>
+
+        <div class="field">
+          <label for="cnpj">CNPJ</label>
+          <input type="text" id="cnpj" name="cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" required>
+          <p class="field__error" data-error-for="cnpj"></p>
+        </div>
+
+        <div class="field">
+          <label for="cep_busca">CEP (opcional — ajuda a preencher o endereço abaixo)</label>
+          <input type="text" id="cep_busca" placeholder="00000-000" inputmode="numeric" maxlength="9">
+          <p class="field__hint" id="cep_busca-status"></p>
+        </div>
+
+        <div class="field">
+          <label for="endereco">Endereço</label>
+          <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro" required>
+          <p class="field__error" data-error-for="endereco"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="cidade">Cidade</label>
+            <input type="text" id="cidade" name="cidade" required>
+            <p class="field__error" data-error-for="cidade"></p>
+          </div>
+          <div class="field">
+            <label for="uf">UF</label>
+            <input type="text" id="uf" name="uf" maxlength="2" style="text-transform:uppercase" required>
+            <p class="field__error" data-error-for="uf"></p>
+          </div>
+          <div class="field">
+            <label for="cep">CEP</label>
+            <input type="text" id="cep" name="cep" inputmode="numeric" placeholder="00000-000" required>
+            <p class="field__error" data-error-for="cep"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="telefone">Telefone</label>
+            <input type="tel" id="telefone" name="telefone" inputmode="tel" placeholder="(00) 00000-0000" required>
+            <p class="field__error" data-error-for="telefone"></p>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" autocomplete="email" required>
+            <p class="field__error" data-error-for="email"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="conta_corrente">Conta corrente (opcional)</label>
+            <input type="text" id="conta_corrente" name="conta_corrente">
+          </div>
+          <div class="field">
+            <label for="banco">Banco (opcional)</label>
+            <input type="text" id="banco" name="banco">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="agencia">Agência (opcional)</label>
+            <input type="text" id="agencia" name="agencia">
+          </div>
+          <div class="field">
+            <label for="praca_pagamento">Praça de pagamento (opcional)</label>
+            <input type="text" id="praca_pagamento" name="praca_pagamento">
+          </div>
+        </div>
+
+        <h3 class="section-title">Responsável pela empresa</h3>
+
+        <div class="field">
+          <label for="responsavel_nome">Nome completo</label>
+          <input type="text" id="responsavel_nome" name="responsavel_nome" required>
+          <p class="field__error" data-error-for="responsavel_nome"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="responsavel_ci_orgao">CI / Órgão expedidor</label>
+            <input type="text" id="responsavel_ci_orgao" name="responsavel_ci_orgao" required>
+            <p class="field__error" data-error-for="responsavel_ci_orgao"></p>
+          </div>
+          <div class="field">
+            <label for="responsavel_cpf">CPF</label>
+            <input type="text" id="responsavel_cpf" name="responsavel_cpf" inputmode="numeric" placeholder="000.000.000-00" required>
+            <p class="field__error" data-error-for="responsavel_cpf"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="responsavel_endereco">Endereço</label>
+          <input type="text" id="responsavel_endereco" name="responsavel_endereco" required>
+          <p class="field__error" data-error-for="responsavel_endereco"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="responsavel_cidade_uf">Cidade/UF</label>
+            <input type="text" id="responsavel_cidade_uf" name="responsavel_cidade_uf" required>
+            <p class="field__error" data-error-for="responsavel_cidade_uf"></p>
+          </div>
+          <div class="field">
+            <label for="responsavel_cep">CEP</label>
+            <input type="text" id="responsavel_cep" name="responsavel_cep" inputmode="numeric" required>
+            <p class="field__error" data-error-for="responsavel_cep"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="responsavel_cargo">Cargo/Função</label>
+            <input type="text" id="responsavel_cargo" name="responsavel_cargo" required>
+            <p class="field__error" data-error-for="responsavel_cargo"></p>
+          </div>
+          <div class="field">
+            <label for="responsavel_contato">Contato (telefone)</label>
+            <input type="text" id="responsavel_contato" name="responsavel_contato" required>
+            <p class="field__error" data-error-for="responsavel_contato"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="responsavel_email">Email do responsável</label>
+          <input type="email" id="responsavel_email" name="responsavel_email" required>
+          <p class="field__error" data-error-for="responsavel_email"></p>
+        </div>
+
+        <h3 class="section-title">1.1 Ramo de atividade</h3>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="ramo_atividade_cnae">Código (CNAE)</label>
+            <input type="text" id="ramo_atividade_cnae" name="ramo_atividade_cnae" required>
+            <p class="field__error" data-error-for="ramo_atividade_cnae"></p>
+          </div>
+          <div class="field">
+            <label for="ramo_atividade_especificacao">Especificação</label>
+            <input type="text" id="ramo_atividade_especificacao" name="ramo_atividade_especificacao" required>
+            <p class="field__error" data-error-for="ramo_atividade_especificacao"></p>
+          </div>
+        </div>
+
+        <h3 class="section-title">2. Dados Econômicos e Financeiros</h3>
+        <p class="section-desc">Opcionais — preencha o que já tiver disponível.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="capital_social_data">2.2 Capital Social — Data</label>
+            <input type="text" id="capital_social_data" name="capital_social_data" placeholder="dd/mm/aaaa">
+          </div>
+          <div class="field">
+            <label for="capital_social_ato">Ato societário</label>
+            <input type="text" id="capital_social_ato" name="capital_social_ato">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="capital_recursos_proprios">Recursos próprios (R$)</label>
+            <input type="text" id="capital_recursos_proprios" name="capital_recursos_proprios" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="capital_recursos_incentivos">Recursos de incentivos (R$)</label>
+            <input type="text" id="capital_recursos_incentivos" name="capital_recursos_incentivos" inputmode="decimal">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="capital_recursos_outros">Outros recursos (R$)</label>
+            <input type="text" id="capital_recursos_outros" name="capital_recursos_outros" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="capital_recursos_total">Total (R$)</label>
+            <input type="text" id="capital_recursos_total" name="capital_recursos_total" inputmode="decimal">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="composicao_nacional_pct">2.3 Composição do capital — Nacional (%)</label>
+            <input type="text" id="composicao_nacional_pct" name="composicao_nacional_pct" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="composicao_estrangeiro_pct">Estrangeiro (%)</label>
+            <input type="text" id="composicao_estrangeiro_pct" name="composicao_estrangeiro_pct" inputmode="decimal">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="principais_acionistas">2.4 Principais acionistas/cotistas</label>
+          <textarea id="principais_acionistas" name="principais_acionistas" rows="3" placeholder="Liste nome, CPF/CNPJ e % do capital de cada um"></textarea>
+        </div>
+
+        <h3 class="section-title">4. Concepção do Projeto</h3>
+
+        <div class="field">
+          <label for="projeto_objetivo">4.1 Objetivo do projeto</label>
+          <textarea id="projeto_objetivo" name="projeto_objetivo" rows="4" required></textarea>
+          <p class="field__error" data-error-for="projeto_objetivo"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="distrito_industrial">4.2 Distrito Industrial</label>
+            <input type="text" id="distrito_industrial" name="distrito_industrial" required>
+            <p class="field__error" data-error-for="distrito_industrial"></p>
+          </div>
+          <div class="field">
+            <label for="area_terreno_m2">Área do terreno (m²)</label>
+            <input type="text" id="area_terreno_m2" name="area_terreno_m2" inputmode="decimal" required>
+            <p class="field__error" data-error-for="area_terreno_m2"></p>
+          </div>
+        </div>
+
+        <p class="section-desc">4.3 Prazos (opcional)</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="prazo_implantacao_inicio">Implantação — início</label>
+            <input type="text" id="prazo_implantacao_inicio" name="prazo_implantacao_inicio" placeholder="mês/ano">
+          </div>
+          <div class="field">
+            <label for="prazo_implantacao_termino">Implantação — término</label>
+            <input type="text" id="prazo_implantacao_termino" name="prazo_implantacao_termino" placeholder="mês/ano">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="prazo_expansao_inicio">Expansão — início</label>
+            <input type="text" id="prazo_expansao_inicio" name="prazo_expansao_inicio" placeholder="mês/ano">
+          </div>
+          <div class="field">
+            <label for="prazo_expansao_termino">Expansão — término</label>
+            <input type="text" id="prazo_expansao_termino" name="prazo_expansao_termino" placeholder="mês/ano">
+          </div>
+        </div>
+
+        <p class="section-desc">4.4 Aspectos de Engenharia (opcional)</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="eng_area_construida_implantacao">Área construída (m²) — Implantação</label>
+            <input type="text" id="eng_area_construida_implantacao" name="eng_area_construida_implantacao" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="eng_area_construida_expansao">Área construída (m²) — Expansão</label>
+            <input type="text" id="eng_area_construida_expansao" name="eng_area_construida_expansao" inputmode="decimal">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="eng_area_estocagem_implantacao">Área de estocagem ao ar livre (m²) — Implantação</label>
+            <input type="text" id="eng_area_estocagem_implantacao" name="eng_area_estocagem_implantacao" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="eng_area_estocagem_expansao">Área de estocagem ao ar livre (m²) — Expansão</label>
+            <input type="text" id="eng_area_estocagem_expansao" name="eng_area_estocagem_expansao" inputmode="decimal">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="eng_estacionamento_implantacao">Estacionamento/pátio (m²) — Implantação</label>
+            <input type="text" id="eng_estacionamento_implantacao" name="eng_estacionamento_implantacao" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="eng_estacionamento_expansao">Estacionamento/pátio (m²) — Expansão</label>
+            <input type="text" id="eng_estacionamento_expansao" name="eng_estacionamento_expansao" inputmode="decimal">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="fluxo_producao_descricao">4.5 Fluxo de Produção — Descrição</label>
+          <textarea id="fluxo_producao_descricao" name="fluxo_producao_descricao" rows="4" required></textarea>
+          <p class="field__error" data-error-for="fluxo_producao_descricao"></p>
+        </div>
+
+        <p class="section-desc">4.9 Aspectos Ambientais e Saneamento (opcional)</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="saneamento_consumo_agua">Consumo de água (m³/dia)</label>
+            <input type="text" id="saneamento_consumo_agua" name="saneamento_consumo_agua" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="saneamento_geracao_esgoto">Geração de esgoto (m³/dia)</label>
+            <input type="text" id="saneamento_geracao_esgoto" name="saneamento_geracao_esgoto" inputmode="decimal">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="saneamento_volume_rejeitos">Volume dos rejeitos (m³/dia)</label>
+            <input type="text" id="saneamento_volume_rejeitos" name="saneamento_volume_rejeitos" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="saneamento_estado_fisico_rejeitos">Estado físico dos rejeitos</label>
+            <input type="text" id="saneamento_estado_fisico_rejeitos" name="saneamento_estado_fisico_rejeitos">
+          </div>
+        </div>
+        <div class="field">
+          <label for="saneamento_tratamento_proprio">Tratamento próprio previsto</label>
+          <input type="text" id="saneamento_tratamento_proprio" name="saneamento_tratamento_proprio">
+        </div>
+        <div class="field">
+          <label for="saneamento_equipamento_controle">Equipamento de controle de poluição</label>
+          <input type="text" id="saneamento_equipamento_controle" name="saneamento_equipamento_controle">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="saneamento_consumo_energia">Consumo de energia elétrica (Kwh/dia)</label>
+            <input type="text" id="saneamento_consumo_energia" name="saneamento_consumo_energia" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="saneamento_potencia_instalada">Potência instalada (HP)</label>
+            <input type="text" id="saneamento_potencia_instalada" name="saneamento_potencia_instalada" inputmode="decimal">
+          </div>
+        </div>
+
+        <p class="section-desc">4.10 Aspectos Sociais</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="empregos_diretos">Empregos diretos</label>
+            <input type="text" id="empregos_diretos" name="empregos_diretos" inputmode="numeric" required>
+            <p class="field__error" data-error-for="empregos_diretos"></p>
+          </div>
+          <div class="field">
+            <label for="empregos_indiretos">Empregos indiretos</label>
+            <input type="text" id="empregos_indiretos" name="empregos_indiretos" inputmode="numeric" required>
+            <p class="field__error" data-error-for="empregos_indiretos"></p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="mao_obra_local_pct">Mão de obra local (%)</label>
+          <input type="text" id="mao_obra_local_pct" name="mao_obra_local_pct" inputmode="decimal">
+        </div>
+
+        <h3 class="section-title">Responsável técnico</h3>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="responsavel_tecnico_nome">Nome completo</label>
+            <input type="text" id="responsavel_tecnico_nome" name="responsavel_tecnico_nome" required>
+            <p class="field__error" data-error-for="responsavel_tecnico_nome"></p>
+          </div>
+          <div class="field">
+            <label for="responsavel_tecnico_registro">Nº de registro no conselho regional</label>
+            <input type="text" id="responsavel_tecnico_registro" name="responsavel_tecnico_registro" required>
+            <p class="field__error" data-error-for="responsavel_tecnico_registro"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="g-recaptcha" data-sitekey="6LfDd70tAAAAAFjlhE_5tSCFK7dW7xkm99fV3-1u"></div>
+          <p class="field__error" data-error-for="recaptcha"></p>
+        </div>
+
+        <div class="card__footer">
+          <p class="card__footer-note">
+            Os dados são usados apenas para geração do documento e do protocolo deste processo.
+          </p>
+          <button type="submit" class="btn-primary" id="btn-submit">Gerar documento PDF</button>
+        </div>
+
+      </form>
+
+      <div class="feedback" id="feedback" role="status" aria-live="polite" hidden></div>
+
+    </main>
+
+  </div>
+
+  <script src="js/anexo-vi-evtf.js"></script>
+</body>
+</html>

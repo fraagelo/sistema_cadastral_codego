@@ -10,27 +10,25 @@ from app.schemas.anexo_viii_d import AnexoViiiDCreate, SOLICITACOES_ANEXO_VIII_D
 from app.schemas.anexo_viii_a import AnexoViiiACreate
 from app.schemas.anexo_viii_b import AnexoViiiBCreate
 from app.schemas.anexo_viii_c import AnexoViiiCCreate
-from app.schemas.anexo_iii import AnexoIiiCreate, DOCUMENTOS_ANEXO_III, MAX_CNAES
+from app.schemas.anexo_iii import AnexoIiiCreate, DOCUMENTOS_ANEXO_III
 from app.schemas.anexo_v_declaracao_uso import AnexoVDeclaracaoUsoCreate
 from app.schemas.anexo_v_cfo import AnexoVCfoCreate
 from app.schemas.anexo_vii_mce import AnexoViiMceCreate, MCE_ESTRUTURA
 from app.schemas.anexo_ix import AnexoIXCreate
+from app.schemas.anexo_vi_evtf import AnexoVIEvtfCreate
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "..", "templates")
 _env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
 
 
-def _carregar_imagem_base64(nome_arquivo: str) -> str:
-    caminho = os.path.join(TEMPLATES_DIR, "assets", nome_arquivo)
+def _carregar_brasao_base64() -> str:
+    caminho = os.path.join(TEMPLATES_DIR, "assets", "brasao_codego.png")
     with open(caminho, "rb") as f:
         conteudo = base64.b64encode(f.read()).decode("ascii")
-    tipo = "jpeg" if nome_arquivo.lower().endswith((".jpg", ".jpeg")) else "png"
-    return f"data:image/{tipo};base64,{conteudo}"
+    return f"data:image/png;base64,{conteudo}"
 
 
-_BRASAO_DATA_URI = _carregar_imagem_base64("brasao_codego.png")
-# Logo usado no cabeçalho das páginas do Regulamento (extraído do modelo oficial).
-_LOGO_REGULAMENTO_DATA_URI = _carregar_imagem_base64("logo_codego_regulamento.png")
+_BRASAO_DATA_URI = _carregar_brasao_base64()
 
 
 def _formatar_cnpj(digits: str) -> str:
@@ -173,8 +171,8 @@ def gerar_pdf_anexo_viii_a(dados: AnexoViiiACreate, protocolo: str) -> str:
 def gerar_pdf_anexo_iii(dados: AnexoIiiCreate, protocolo: str) -> str:
     """
     Renderiza o template do Anexo III (Solicitação de Área) preenchido com os
-    dados reais do requerimento, reproduzindo o layout do modelo do Regulamento,
-    e gera o PDF em disco. Retorna o caminho do arquivo gerado.
+    dados reais do requerimento, e gera o PDF em disco. Retorna o caminho do
+    arquivo gerado.
     """
     template = _env.get_template("anexo_iii.html")
 
@@ -185,12 +183,8 @@ def gerar_pdf_anexo_iii(dados: AnexoIiiCreate, protocolo: str) -> str:
         for chave, rotulo in DOCUMENTOS_ANEXO_III.items()
     ]
 
-    # O modelo sempre tem as 4 linhas de CNAE numeradas; as não usadas ficam em branco.
-    cnaes = [{"numero": c.numero, "descricao": c.descricao} for c in dados.cnaes]
-    cnaes += [{"numero": "", "descricao": ""}] * (MAX_CNAES - len(cnaes))
-
     html_renderizado = template.render(
-        logo_data_uri=_LOGO_REGULAMENTO_DATA_URI,
+        brasao_data_uri=_BRASAO_DATA_URI,
         protocolo=protocolo,
         municipio_interesse=dados.municipio_interesse,
         metragem_necessaria=dados.metragem_necessaria,
@@ -204,7 +198,7 @@ def gerar_pdf_anexo_iii(dados: AnexoIiiCreate, protocolo: str) -> str:
         email=dados.email,
         telefones=dados.telefones,
         representante_endereco_correspondencia=dados.representante_endereco_correspondencia,
-        cnaes=cnaes,
+        cnaes=dados.cnaes,
         documentos=documentos,
         cidade_data=f"Goiânia, {_data_por_extenso(datetime.now())}.",
     )
@@ -213,29 +207,21 @@ def gerar_pdf_anexo_iii(dados: AnexoIiiCreate, protocolo: str) -> str:
     nome_arquivo = f"{protocolo}_anexo_iii.pdf"
     caminho_completo = os.path.join(settings.upload_dir, nome_arquivo)
 
-    # base_url aponta para a pasta de templates para o @font-face achar as
-    # fontes em assets/fonts.
-    HTML(string=html_renderizado, base_url=TEMPLATES_DIR).write_pdf(caminho_completo)
+    HTML(string=html_renderizado).write_pdf(caminho_completo)
 
     return caminho_completo
-
-
-# Faixa do cabeçalho das páginas do Anexo V no Regulamento (verde, com os
-# logos da CODEGO e do Governo de Goiás), extraída do modelo oficial.
-_FAIXA_REGULAMENTO_ANEXO_V_DATA_URI = _carregar_imagem_base64("faixa_regulamento_anexo_v.jpg")
 
 
 def gerar_pdf_anexo_v_declaracao_uso(dados: AnexoVDeclaracaoUsoCreate, protocolo: str) -> str:
     """
     Renderiza o template do Anexo V (Declaração de Uso da Rede de Abastecimento
     de Água e de Esgoto da CODEGO) preenchido com os dados reais do requerimento,
-    reproduzindo o layout do modelo do Regulamento, e gera o PDF em disco.
-    Retorna o caminho do arquivo gerado.
+    e gera o PDF em disco. Retorna o caminho do arquivo gerado.
     """
     template = _env.get_template("anexo_v_declaracao_uso.html")
 
     html_renderizado = template.render(
-        faixa_data_uri=_FAIXA_REGULAMENTO_ANEXO_V_DATA_URI,
+        brasao_data_uri=_BRASAO_DATA_URI,
         protocolo=protocolo,
         processo_numero=dados.processo_numero,
         nome_empresarial=dados.nome_empresarial,
@@ -255,38 +241,36 @@ def gerar_pdf_anexo_v_declaracao_uso(dados: AnexoVDeclaracaoUsoCreate, protocolo
     nome_arquivo = f"{protocolo}_anexo_v_declaracao_uso.pdf"
     caminho_completo = os.path.join(settings.upload_dir, nome_arquivo)
 
-    # base_url aponta para a pasta de templates para o @font-face achar as
-    # fontes em assets/fonts.
-    HTML(string=html_renderizado, base_url=TEMPLATES_DIR).write_pdf(caminho_completo)
+    HTML(string=html_renderizado).write_pdf(caminho_completo)
 
     return caminho_completo
 
 
-# Medidas da tabela do "Modelo do Cronograma" do Regulamento (em pt): largura
-# total, coluna de serviços e quantidade de meses por tabela (3 trimestres,
-# como no modelo). Cronogramas mais longos continuam em novas tabelas.
-LARGURA_TABELA_CFO = 589.6
-LARGURA_COLUNA_SERVICO_CFO = 122.3
-MESES_POR_BLOCO_CFO = 9
-
+# Quantidade de meses por tabela no PDF do CFO. Cronogramas mais longos são
+# quebrados em várias tabelas (de 4 trimestres cada) para caber na página.
+MESES_POR_BLOCO_CFO = 12
 
 
 def gerar_pdf_anexo_v_cfo(dados: AnexoVCfoCreate, protocolo: str) -> str:
     """
     Renderiza o template do Anexo V (Cronograma Físico da Obra — CFO) preenchido
-    com os dados reais do requerimento, reproduzindo o layout do modelo do
-    Regulamento, e gera o PDF em disco. Retorna o caminho do arquivo gerado.
+    com os dados reais do requerimento, e gera o PDF em disco. Retorna o caminho
+    do arquivo gerado.
     """
     template = _env.get_template("anexo_v_cfo.html")
 
+    ano_inicio, mes_inicio = (int(p) for p in dados.inicio_obras.split("-"))
     total = len(dados.servicos[0].percentuais)
-    meses = [{"rotulo": f"{i + 1}º mês"} for i in range(total)]
 
-    # As colunas de mês ocupam toda a largura da tabela do modelo. Quando o
-    # cronograma passa de um bloco, todos os blocos usam a largura do bloco
-    # cheio (o último pode ficar mais estreito).
-    meses_por_coluna = min(total, MESES_POR_BLOCO_CFO)
-    largura_mes = round((LARGURA_TABELA_CFO - LARGURA_COLUNA_SERVICO_CFO) / meses_por_coluna, 2)
+    meses = []
+    for i in range(total):
+        indice_mes = mes_inicio - 1 + i
+        ano = ano_inicio + indice_mes // 12
+        mes = indice_mes % 12
+        meses.append({
+            "rotulo": f"{i + 1}º mês",
+            "referencia": f"{MESES_PT[mes][:3]}/{str(ano)[2:]}",
+        })
 
     # Monta os blocos (tabelas) com os cabeçalhos de trimestre e as linhas de
     # serviço já formatadas, para o template só precisar iterar.
@@ -311,12 +295,10 @@ def gerar_pdf_anexo_v_cfo(dados: AnexoVCfoCreate, protocolo: str) -> str:
             "meses": meses[inicio_bloco:fim_bloco],
             "trimestres": trimestres,
             "linhas": linhas,
-            "largura_mes": largura_mes,
-            "largura": round(LARGURA_COLUNA_SERVICO_CFO + largura_mes * (fim_bloco - inicio_bloco), 2),
         })
 
     html_renderizado = template.render(
-        logo_data_uri=_LOGO_REGULAMENTO_DATA_URI,
+        brasao_data_uri=_BRASAO_DATA_URI,
         protocolo=protocolo,
         nome_empresa=dados.nome_empresa,
         endereco=dados.endereco,
@@ -331,24 +313,16 @@ def gerar_pdf_anexo_v_cfo(dados: AnexoVCfoCreate, protocolo: str) -> str:
     nome_arquivo = f"{protocolo}_anexo_v_cfo.pdf"
     caminho_completo = os.path.join(settings.upload_dir, nome_arquivo)
 
-    # base_url aponta para a pasta de templates para o @font-face achar as
-    # fontes em assets/fonts.
-    HTML(string=html_renderizado, base_url=TEMPLATES_DIR).write_pdf(caminho_completo)
+    HTML(string=html_renderizado).write_pdf(caminho_completo)
 
     return caminho_completo
-
-
-# Papel timbrado do modelo do MCE (logos, marca d'água, endereço e bandeira),
-# extraído do PDF oficial.
-_FUNDO_MCE_DATA_URI = _carregar_imagem_base64("fundo_mce_codego.png")
 
 
 def gerar_pdf_anexo_vii_mce(dados: AnexoViiMceCreate, protocolo: str) -> str:
     """
     Renderiza o template do Memorial de Caracterização do Empreendimento (MCE)
-    preenchido com os dados reais do requerimento, reproduzindo o layout do
-    modelo da CODEGO (Rev. 2), e gera o PDF em disco. Retorna o caminho do
-    arquivo gerado.
+    preenchido com os dados reais do requerimento, e gera o PDF em disco.
+    Retorna o caminho do arquivo gerado.
     """
     template = _env.get_template("anexo_vii_mce.html")
 
@@ -357,14 +331,6 @@ def gerar_pdf_anexo_vii_mce(dados: AnexoViiMceCreate, protocolo: str) -> str:
     valores["cep"] = _formatar_cep(dados.cep)
     valores["telefone"] = _formatar_telefone(dados.telefone)
     valores["mao_obra_total"] = dados.mao_obra_total
-    for campo in ("area_total_terreno", "area_construida", "area_verde"):
-        if valores[campo]:
-            valores[campo] = f"{valores[campo]} m²"
-    if dados.previsao_funcionamento:
-        valores["previsao_funcionamento"] = _mes_ano_por_extenso(dados.previsao_funcionamento)
-    for campo in ("data_inicio_operacoes", "pca_data_revisao"):
-        if valores[campo]:
-            valores[campo] = datetime.strptime(valores[campo], "%Y-%m-%d").strftime("%d/%m/%Y")
 
     # Resolve a estrutura do MCE com os valores preenchidos. Campos opcionais
     # deixados em branco aparecem como "Não informado" no documento.
@@ -382,11 +348,10 @@ def gerar_pdf_anexo_vii_mce(dados: AnexoViiMceCreate, protocolo: str) -> str:
         secoes.append({"titulo": secao["titulo"], "subsecoes": subsecoes})
 
     html_renderizado = template.render(
-        fundo_data_uri=_FUNDO_MCE_DATA_URI,
+        brasao_data_uri=_BRASAO_DATA_URI,
         protocolo=protocolo,
         secoes=secoes,
-        local=dados.local_cidade_uf,
-        data=_data_por_extenso(datetime.now()),
+        local_data=f"{dados.local_cidade_uf}, {_data_por_extenso(datetime.now())}",
         responsavel_nome=dados.responsavel_nome,
         responsavel_cargo=dados.responsavel_cargo,
         razao_social=dados.razao_social,
@@ -547,6 +512,93 @@ def gerar_pdf_anexo_ix(dados: AnexoIXCreate, protocolo: str) -> str:
 
     os.makedirs(settings.upload_dir, exist_ok=True)
     nome_arquivo = f"{protocolo}_anexo_ix.pdf"
+    caminho_completo = os.path.join(settings.upload_dir, nome_arquivo)
+
+    HTML(string=html_renderizado).write_pdf(caminho_completo)
+
+    return caminho_completo
+
+
+def gerar_pdf_anexo_vi_evtf(dados: AnexoVIEvtfCreate, protocolo: str) -> str:
+    """
+    Renderiza o template do Anexo VI (Formulário de Viabilidade Técnica e
+    Financeira - EVTF) preenchido com os dados reais do requerimento, e gera o
+    PDF em disco. Retorna o caminho do arquivo gerado.
+
+    Cobre as seções 1 (Dados Cadastrais), 2 (Dados Econômicos e Financeiros,
+    simplificada) e 4 (Concepção do Projeto, sem as tabelas de produção
+    anual/mercado/matérias-primas). As seções 3 (DRE), 5 (Investimentos) e 6
+    (Custos Anuais) ainda serão adicionadas em uma etapa seguinte.
+    """
+    template = _env.get_template("anexo_vi_evtf.html")
+
+    html_renderizado = template.render(
+        brasao_data_uri=_BRASAO_DATA_URI,
+        protocolo=protocolo,
+        cidade_data=datetime.now().strftime("Goiânia, %d/%m/%Y"),
+        razao_social=dados.razao_social,
+        cnpj=_formatar_cnpj(dados.cnpj),
+        endereco=dados.endereco,
+        cidade=dados.cidade,
+        uf=dados.uf,
+        cep=dados.cep,
+        telefone=_formatar_telefone(dados.telefone),
+        email=dados.email,
+        conta_corrente=dados.conta_corrente,
+        banco=dados.banco,
+        agencia=dados.agencia,
+        praca_pagamento=dados.praca_pagamento,
+        responsavel_nome=dados.responsavel_nome,
+        responsavel_ci_orgao=dados.responsavel_ci_orgao,
+        responsavel_cpf=_formatar_cpf(dados.responsavel_cpf),
+        responsavel_endereco=dados.responsavel_endereco,
+        responsavel_cidade_uf=dados.responsavel_cidade_uf,
+        responsavel_cep=dados.responsavel_cep,
+        responsavel_cargo=dados.responsavel_cargo,
+        responsavel_contato=dados.responsavel_contato,
+        responsavel_email=dados.responsavel_email,
+        ramo_atividade_cnae=dados.ramo_atividade_cnae,
+        ramo_atividade_especificacao=dados.ramo_atividade_especificacao,
+        capital_social_data=dados.capital_social_data,
+        capital_social_ato=dados.capital_social_ato,
+        capital_recursos_proprios=dados.capital_recursos_proprios,
+        capital_recursos_incentivos=dados.capital_recursos_incentivos,
+        capital_recursos_outros=dados.capital_recursos_outros,
+        capital_recursos_total=dados.capital_recursos_total,
+        composicao_nacional_pct=dados.composicao_nacional_pct,
+        composicao_estrangeiro_pct=dados.composicao_estrangeiro_pct,
+        principais_acionistas=dados.principais_acionistas,
+        projeto_objetivo=dados.projeto_objetivo,
+        distrito_industrial=dados.distrito_industrial,
+        area_terreno_m2=dados.area_terreno_m2,
+        prazo_implantacao_inicio=dados.prazo_implantacao_inicio,
+        prazo_implantacao_termino=dados.prazo_implantacao_termino,
+        prazo_expansao_inicio=dados.prazo_expansao_inicio,
+        prazo_expansao_termino=dados.prazo_expansao_termino,
+        eng_area_construida_implantacao=dados.eng_area_construida_implantacao,
+        eng_area_construida_expansao=dados.eng_area_construida_expansao,
+        eng_area_estocagem_implantacao=dados.eng_area_estocagem_implantacao,
+        eng_area_estocagem_expansao=dados.eng_area_estocagem_expansao,
+        eng_estacionamento_implantacao=dados.eng_estacionamento_implantacao,
+        eng_estacionamento_expansao=dados.eng_estacionamento_expansao,
+        fluxo_producao_descricao=dados.fluxo_producao_descricao,
+        saneamento_consumo_agua=dados.saneamento_consumo_agua,
+        saneamento_geracao_esgoto=dados.saneamento_geracao_esgoto,
+        saneamento_volume_rejeitos=dados.saneamento_volume_rejeitos,
+        saneamento_estado_fisico_rejeitos=dados.saneamento_estado_fisico_rejeitos,
+        saneamento_tratamento_proprio=dados.saneamento_tratamento_proprio,
+        saneamento_equipamento_controle=dados.saneamento_equipamento_controle,
+        saneamento_consumo_energia=dados.saneamento_consumo_energia,
+        saneamento_potencia_instalada=dados.saneamento_potencia_instalada,
+        empregos_diretos=dados.empregos_diretos,
+        empregos_indiretos=dados.empregos_indiretos,
+        mao_obra_local_pct=dados.mao_obra_local_pct,
+        responsavel_tecnico_nome=dados.responsavel_tecnico_nome,
+        responsavel_tecnico_registro=dados.responsavel_tecnico_registro,
+    )
+
+    os.makedirs(settings.upload_dir, exist_ok=True)
+    nome_arquivo = f"{protocolo}_anexo_vi_evtf.pdf"
     caminho_completo = os.path.join(settings.upload_dir, nome_arquivo)
 
     HTML(string=html_renderizado).write_pdf(caminho_completo)
